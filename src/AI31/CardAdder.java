@@ -10,8 +10,8 @@ public class CardAdder {
 			cards.add(new Card31(i, "spades"));
 			cards.add(new Card31(i, "diamonds"));
 		}
-		for(int j=0; j<UserInterface.faceCards.length; j++){
-			char c = UserInterface.faceCards[j];
+		for(int j=0; j<UserInterface.FACE_CARDS.length; j++){
+			char c = UserInterface.FACE_CARDS[j];
 			cards.add(new Card31(c, "clubs"));
 			cards.add(new Card31(c, "hearts"));
 			cards.add(new Card31(c, "spades"));

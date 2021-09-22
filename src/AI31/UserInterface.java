@@ -35,7 +35,7 @@ public class UserInterface extends JFrame{
 	/**
 	 * The serial version UID. I don't know what it's for, but please do not attempt to use outdated versions.
 	 */
-	private static final long serialVersionUID = 23987645246L;
+	private static final long serialVersionUID = 6666667665L;
 	/**
 	 * The game cards.
 	 */
@@ -67,7 +67,7 @@ public class UserInterface extends JFrame{
 	/**
 	 * The face cards - jack, queen, king, and ace
 	 */
-	public static final char[] faceCards = {'J','Q','K','A'};
+	public static final char[] FACE_CARDS = {'J','Q','K','A'};
 	/**
 	 * Who's turn it is. If you are playing a default game, 0 is the first computer, 1 is the second, and so on.
 	 * The middle hand does not do a turn - it needs a hand.
@@ -180,11 +180,11 @@ public class UserInterface extends JFrame{
 	 */
 	public UserInterface() throws PlayingCardException, GameErrorException{
 		//setting up the ArrayLists
-		super("31 v.8.8.1 (Real final version - unless something breaks - let me know at my website - thedyksite.weebly.com if it breaks!)");
+		super("31 v.10.1 since v9.0's files are gone :(");
 		setUpGUI();
 	}
 	/** An old constructor for UserInterface, primarily for testing purposes. DO NOT USE.
-	 * @deprecated
+	 * @deprecated As of version 4.0, this constructor is not to be used,
 	 * @param info - this boolean means absolutely nothing at all
 	 */
 	public UserInterface(boolean info) {
@@ -1290,8 +1290,8 @@ public class UserInterface extends JFrame{
 				cards.add(new Card31(i, "spades"));
 				cards.add(new Card31(i, "diamonds"));
 			}
-			for(int j=0; j<faceCards.length; j++){
-				char c = faceCards[j];
+			for(int j=0; j<FACE_CARDS.length; j++){
+				char c = FACE_CARDS[j];
 				cards.add(new Card31(c, "clubs"));
 				cards.add(new Card31(c, "hearts"));
 				cards.add(new Card31(c, "spades"));
