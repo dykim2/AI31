@@ -1,0 +1,55 @@
+public class ClimbingTrackerTester {
+	public static void main(String[] args) {
+		runAllTests();
+	}
+
+	public static boolean runAllTests() {
+		return true;
+	}
+
+	/*
+	 * Create an oversized array of Strings to test the sendClimb() method
+	 * Add empty, partially-filled, and filled array
+	 * if you get a return value you do not expect, return **false**
+	 * return true if all tests have been passed
+	 */
+
+	public static boolean testSendClimb() {
+		// empty array - an empty string array
+		String[] emptyClimb = new String[10];
+		int emptyClimbSize = 0;
+
+		// partially filled array - a partially filled string array
+		String[] partialClimb = { "", "", "", "", "", "", "", "", "", "" };
+		int partialClimbSize = 5;
+
+		// full array - a completely filled array
+		String[] fullClimb = { "", "", "", "", "", "", "", "", "", "" };
+		int fullClimbSize = 10;
+
+		String newGrade = "V1";
+		int returnValue = ClimbingTracker.sendClimb(emptyClimb, emptyClimbSize, newGrade);
+		
+		// accurate
+		if (returnValue == emptyClimbSize + 1) {
+			// if it works properly
+			System.out.println("sendClimb worked with climb length " + returnValue);
+
+		}
+
+		return true;
+	}
+
+	public static boolean testFailClimb() {
+		return true;
+	}
+
+	public static boolean testGetStats() {
+		return true;
+	}
+
+	public static boolean testGetHistogram() {
+		return true;
+	}
+
+}
