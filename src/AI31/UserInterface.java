@@ -180,7 +180,7 @@ public class UserInterface extends JFrame{
 	 */
 	public UserInterface() throws PlayingCardException, GameErrorException{
 		//setting up the ArrayLists
-		super("31 v.8.8.1 (Real final version - unless something breaks - let me know at my website - thedyksite.weebly.com if it breaks!)");
+		super("31 v10.1");
 		setUpGUI();
 	}
 	/** An old constructor for UserInterface, primarily for testing purposes. DO NOT USE.
