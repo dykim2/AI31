@@ -3,6 +3,7 @@
  */
 package AI31;
 import java.awt.BorderLayout;
+import java.awt.Container;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
@@ -82,7 +83,7 @@ public class UserPanel extends JPanel implements ActionListener, AI31Constants{
 	 */
 	private JButton nextTurnButton;
 	/**
-	 * The pause button. It literally does nothing at all.
+	 * The pause button. It should pause the program for 3 seconds.
 	 */
 	private JButton pauseButton;
 	/**
@@ -294,24 +295,72 @@ public class UserPanel extends JPanel implements ActionListener, AI31Constants{
 	 */
 	private static final String[] TIMER_OPTIONS = {"Choose the speed of the game:", "0 Seconds", "0.01 Seconds", "1 Second", 
 			"2 Seconds", "3 Seconds", "4 Seconds", "5 Seconds", "Choose your own timer..."};
+	/**
+	 * The display options - do you want there to be pop-ups for lives lost, eliminations, both, or neither?
+	 * It will remain in the chat no matter what way you choose.
+	 */
 	private static final String[] DISPLAY_OPTIONS = {"Choose which dialog boxes you want:", "No lives nor eliminations",
 			"Eliminations but no lives", "Lives but no eliminations", "Lives and eliminations"};
+	/**
+	 * Gamemode options. There are four main (not including default mode) options, which include the following:
+	 * 1: Competition (you vs some number of AI's)
+	 * 2: Friendly (you vs other people on the same machine - no AI players)
+	 * 3: Combination (you and other local players vs AI's)
+	 * 4: Custom - you can change most of the bonus settings here!
+	 */
 	private static final String[] MODE_OPTIONS = {"Choose the game mode:", "1: Competition (facing AIs)", "2: Friendly (facing local players)",
 			"3: Combination (facing both local and AI players)", "4: Custom (choose from a range of different settings)"};
+	/**
+	 * The options for the colors of the back of the cards. Currently, there are ten options, all shown in the bottom combo box.
+	 */
 	private static final String[] CARD_BACK_OPTIONS = {"Choose the card back color: ", "Blue", "Yellow", "Red", "Green",
 			"Gray", "Purple", "Orange", "Brown", "Aqua", "Black"};
+	/**
+	 * The speed of the actions - how much time is there between each player's actions?
+	 */
 	private static int speed = 2500;
+	/**
+	 * The color of the card's backs.
+	 */
 	private String selectedBack = "blue";
+	/**
+	 * A constant equal to 2 that denotes that the current display settings (showing both life loss and eliminations)
+	 */
 	public static final int LIVES_AND_ELIMINATIONS = 2;
+	/**
+	 * A constant equal to 1 that denotes that the current display settings (showing only life loss, no eliminations)
+	 */
 	public static final int LIVES_NOT_ELIMINATIONS = 1;
+	/**
+	 * A constant equal to 0 that denotes that the current display settings (showing only eliminations, no life loss)
+	 */
 	public static final int NO_LIVES_AND_ELIMINATIONS = 0;
+	/**
+	 * A constant equal to -1 that denotes that the current display settings (showing neither life loss nor eliminations)
+	 */
 	public static final int NO_LIVES_NOR_ELIMINATIONS = -1;
+	/**
+	 * Stores the display settings for lives and elimninations.
+	 */
 	private static int showEliminations = LIVES_AND_ELIMINATIONS;
 	private boolean paused = false;
 	/*^^^^^^^^^^ Components for the game GUI ^^^^^^^^^^*/
+	/**
+	 * The list of players for the game.
+	 */
 	private ArrayList<Player> players = new ArrayList<Player>();
+	/**
+	 * A copy of the players array, needed for moving Player objects around.
+	 */
 	private ArrayList<Player> playerCopy = new ArrayList<Player>();
+	/**
+	 * Is the first custon mode selected?
+	 */
 	protected boolean firstCustomSelected = true;
+	/**
+	 * Sets up the UserPanel (most of the components of the UserInterface GUI)
+	 * @param u - the UserInterface this panel belongs with
+	 */
 	public UserPanel(UserInterface u) {super(); userInterface = u; try{setUp();}catch(GUISetUpException e) {UserInterface.displayException(e, 1);}}
 	public void setUp() throws GUISetUpException{//this will run the exact same set up as the main function
 		try {
@@ -620,11 +669,17 @@ public class UserPanel extends JPanel implements ActionListener, AI31Constants{
 		radioButtonPanel.add(multiPlayerOn);
 		topPanel.add(radioButtonPanel);
 	}
+	/**
+	 * Adds the players to the game.
+	 */
 	protected void addPlayers() {
 		ArrayList<Player> playerCopy1 = userInterface.getPlayers();
 		players.clear();
 		players.addAll(playerCopy1);
 	}
+	/**
+	 * Replaces the sliders that show the number of AI enemies with sliders that ask for the number of human players.
+	 */
 	protected void swapSlidersOut() {
 		changeStatus(-6, false);
 		playerLabel.setText("Choose the number of human players:");
@@ -654,10 +709,19 @@ public class UserPanel extends JPanel implements ActionListener, AI31Constants{
 	}
 	@Override
 	public void actionPerformed(ActionEvent e) {
+		//switch statement or just if conditions?
+		//if conditions seem to be better
+		//the following five conditions allow for using the buttons on the bottom without affecting the game in progress
+		if(e.getSource() == clearButton) {userInterface.actionCount--;}
+		if(e.getSource() == speedBox) {userInterface.actionCount--;}
+		if(e.getSource() == cardBackOptionsBox) {userInterface.actionCount--;}
+		if(e.getSource() == pauseButton) {userInterface.actionCount--;}
+		if(e.getSource() == displayLivesLostBox) {userInterface.actionCount--;}
+
 		userInterface.actionCount++;
 		if(userInterface.actionCount == 1) {startGameButton.setText("Start Game"); topPanel.revalidate(); topPanel.repaint();}
 		try {
-			if(e.getSource()==startGameButton) {startGameAction();}
+			if(e.getSource() == startGameButton) {startGameAction();}
 			else if(e.getSource() == nextTurnButton) {userInterface.doAITurns();}
 			else if(e.getSource() == pauseButton) {paused = !paused; pauseAction();}
 			else if(e.getSource() == finishRoundButton) {finishRound();}
@@ -666,7 +730,16 @@ public class UserPanel extends JPanel implements ActionListener, AI31Constants{
 			else if(e.getSource() == userInterface.getNonRepeatingTimer()) {nonRepeatingTimerAction();}
 			else if(e.getSource() == quitButton) {System.exit(0);}
 			else if(e.getSource() == pauseButton) {
-				if(pauseButton.getText().equals("Pause")) {pauseButton.setText("Resume");}
+				System.out.println("pause?");
+				if(pauseButton.getText().equals("Pause")) {
+					pauseButton.setText("Resume"); 
+					try {
+						Thread.sleep(3000);//wait 3 second before continuing
+					}
+					catch(InterruptedException exc) {
+						UserInterface.displayError("Program interrupted.");
+					}
+				}
 				else {pauseButton.setText("Pause"); }
 			}
 			else if(e.getSource() == clearButton) {playArea.setText("");}
@@ -676,7 +749,7 @@ public class UserPanel extends JPanel implements ActionListener, AI31Constants{
 			else if(e.getSource() == gameModeOptions) {updateGameMode();}
 		}
 		catch(Exception ex) {UserInterface.displayException(ex, 1);}
-		
+
 	}
 	protected void startGameAction() {
 		if(userInterface.actionCount == 1) {userInterface.defaultGame = true; userInterface.setUpDefaultGame(); return;}//only set up changes
@@ -734,6 +807,9 @@ public class UserPanel extends JPanel implements ActionListener, AI31Constants{
 
 		}
 	}
+	/**
+	 * Resets the hand's information regarding computer and player sums.
+	 */
 	protected void startRoundAction() {
 		try {
 			sumOfCPU.setText("Sum: ");
@@ -865,7 +941,7 @@ public class UserPanel extends JPanel implements ActionListener, AI31Constants{
 			else {pauseButton.setText("Resume"); this.wait();}
 		}
 		catch(InterruptedException e) {}
-		*/
+		 */
 	}
 	protected void finishRound() {
 		if(!userInterface.playersAlive()) {

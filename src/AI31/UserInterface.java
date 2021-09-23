@@ -31,7 +31,7 @@ import baselineCustomClasses.PlayingCardException;
  * @version 10.1 // I just want it to work!
  * </html>
  */
-public class UserInterface extends JFrame{
+public class UserInterface extends JFrame implements AI31Constants{
 	/**
 	 * The serial version UID. I don't know what it's for, but please do not attempt to use outdated versions.
 	 */
@@ -65,10 +65,6 @@ public class UserInterface extends JFrame{
 	 */
 	private ArrayList<String> playerNames = new ArrayList<String>();//the names of the AIs
 	/**
-	 * The face cards - jack, queen, king, and ace
-	 */
-	public static final char[] faceCards = {'J','Q','K','A'};
-	/**
 	 * Who's turn it is. If you are playing a default game, 0 is the first computer, 1 is the second, and so on.
 	 * The middle hand does not do a turn - it needs a hand.
 	 */
@@ -83,10 +79,6 @@ public class UserInterface extends JFrame{
 	 * Which players are currently alive for this round? A "dead" player has taken their final turn for the round.
 	 */
 	private ArrayList<Integer> alivePlayers;
-	/**
-	 * Some utterly useless variable. Hey, who said we couldn't have nice things?
-	 */
-	private int num; //this does nothing
 	/**
 	 * Number of played rounds.
 	 */
@@ -619,7 +611,6 @@ public class UserInterface extends JFrame{
 			allPlayers.addAll(players);
 			panel.updatePlayerHand();
 			panel.addPlayers();
-			displayWarning("The game might run slow, so be patient!", "Patience is key!");
 			deal();
 		}
 		catch(GameErrorException e) {displayException(e, 0);}
@@ -1290,8 +1281,8 @@ public class UserInterface extends JFrame{
 				cards.add(new Card31(i, "spades"));
 				cards.add(new Card31(i, "diamonds"));
 			}
-			for(int j=0; j<faceCards.length; j++){
-				char c = faceCards[j];
+			for(int j=0; j<FACE_CARDS.length; j++){
+				char c = FACE_CARDS[j];
 				cards.add(new Card31(c, "clubs"));
 				cards.add(new Card31(c, "hearts"));
 				cards.add(new Card31(c, "spades"));
@@ -1428,13 +1419,13 @@ public class UserInterface extends JFrame{
 		else {
 			Random r = new Random();
 			int card = 0;
-			Card31 c;
+			Card31 c = null;
 			for(int i=1; i<4; i++){//3 cards
 				for(Player p: players){
 					if(p!=null) {
 						card = r.nextInt(cards.size());//0 to size-1	
 						c = cards.remove(card);
-						p.addCard(c);//adds the card c and removes the card from the arraylist
+						p.addCard(c);//adds the card c and removes the card from the arraylist, making sured there are no shallow copies
 						c = null;//to ensure that c is reset
 					}
 				}
@@ -1707,6 +1698,7 @@ public class UserInterface extends JFrame{
 	}
 	/**
 	 * The only difference: this will affect the non-repeating timer, not the repeating timer
+	 * @param sOe - true if the game is starting and you want to restart the timer, false if you want to end the game.
 	 * @see #startOrEndTimer(boolean)
 	 * 
 	 */
@@ -1801,7 +1793,7 @@ public class UserInterface extends JFrame{
 	/*VVVVVVVVVV MAIN method and playing the userInterface VVVVVVVVVV*/
 	/**
 	 * The good old main method. You don't need to know what happens here, except that this makes Swing thread safe (?)
-	 * @param args
+	 * @param args - the given arguments by the system
 	 */
 	public static void main(String[] args) {
 		askedInfo = false;
