@@ -74,7 +74,7 @@ public class PlayingCard {//this assumes the running of one game at a time, not 
 			else if(f == 'Q' || f == 'q'){if(faceCardsIncrement){number = jackValue + 1;} else{number = jackValue;}specialNumber = 12;}
 			else if(f == 'J' || f == 'j'){if(faceCardsIncrement){number = jackValue;} else{number = jackValue;}specialNumber = 11;}
 			else if(f == ' '){}
-			else{throw new PlayingCardException(f+" is not a valid face (Error #C4854).");}
+			else{throw new PlayingCardException(f+" is not a valid face.", "C4854");}
 			suit = new String(s);
 			setImage();
 		}
@@ -91,7 +91,7 @@ public class PlayingCard {//this assumes the running of one game at a time, not 
 	public static boolean getValueConditions(int choice) throws PlayingCardException{
 		if(choice==1){return aceHigh;}
 		else if(choice==0){return faceCardsIncrement;}
-		else{throw new PlayingCardException(choice+" is not a valid choice. Error #V4009");}
+		else{throw new PlayingCardException(choice+" is not a valid choice.", "V4009");}
 	}
 	public int getNumber(){return number;}
 	public char getFace(){return face;}
@@ -118,7 +118,7 @@ public class PlayingCard {//this assumes the running of one game at a time, not 
 	public static void setValueConditions(int choice, boolean condition, int val) throws PlayingCardException{
 		if(choice == 1){aceHigh = condition; previousAceValue = aceValue; aceValue = val;}
 		else if(choice == 0){faceCardsIncrement = condition; previousJackValue = jackValue; jackValue = val;}
-		else{throw new PlayingCardException(choice+ "is not a valid choice. Error #B1424");}}
+		else{throw new PlayingCardException(choice+ "is not a valid choice.","B1424");}}
 	public void updateNumber() throws PlayingCardException {
 		if(number == previousAceValue){number = aceValue;}
 		else if(number==previousJackValue+2){number=jackValue;}
@@ -127,7 +127,7 @@ public class PlayingCard {//this assumes the running of one game at a time, not 
 			if(face=='K'||face=='k'){number=jackValue+2;}
 			else if(face=='Q'||face=='q'){number=jackValue+1;}
 			else if(face=='J'||face=='j'){number=jackValue;}
-			else{throw new PlayingCardException(face+" is not a valid face (Error #A1531).");}
+			else{throw new PlayingCardException(face+" is not a valid face.", "1531");}
 		}
 
 	}

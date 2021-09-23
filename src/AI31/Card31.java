@@ -5,11 +5,17 @@ import baselineCustomClasses.*;
 
 public class Card31 extends PlayingCard implements Comparable<Card31>{
 	private int removedIndex = -1;
+	/**
+	 * The list of random suits generated.
+	 */
 	public static final Card31[] RANDOM_SUITS = {new Card31(-1, "Random Spade"), new Card31(-1, "Random Club"), new Card31(-1, "Random Heart"),
 			new Card31(-1, "Random Diamond"), new Card31(-1, "Random Spade or Club"), new Card31(-1, "Random Spade or Heart"), new Card31(-1, "Random Spade or Diamond"),
 			new Card31(-1, "Random Club or Heart"), new Card31(-1, "Random Club or Diamond"), new Card31(-1, "Random Heart or Diamond"),
 			new Card31(-1, "Random not Spade"), new Card31(-1, "Random not Club"), new Card31(-1, "Random not Heart"), 
 			new Card31(-1, "Random not Diamond")};
+	/**
+	 * The list of strings of random suits that are generated.
+	 */
 	public static final String[] RANDOM_SUIT_STRINGS  = {"Random Spade", "Random Club", "Random Heart", "Random Diamond", "Random Spade or Club",
 			"Random Spade or Heart", "Random Spade or Diamond", "Random Club or Heart", "Random Club or Diamond", "Random Heart or Diamond",
 			"Random not Spade", "Random not Club", "Random not Heart", "Random not Diamond"};
@@ -56,7 +62,7 @@ public class Card31 extends PlayingCard implements Comparable<Card31>{
 					else if(getSuit().contains("Club")) {return 11;}
 					else if(getSuit().contains("Heart")) {return 12;}
 					else if(getSuit().contains("Diamond")) {return 13;}
-					else {throw new GameErrorException("Please specify a valid suit to not include.");}
+					else {throw new GameErrorException("Please specify a valid suit to not include.", "A9981");}
 				}
 				else if(getSuit().contains("Spade")) {
 					if(getSuit().contains("Club")) {
@@ -84,9 +90,9 @@ public class Card31 extends PlayingCard implements Comparable<Card31>{
 					else {return 2;}
 				}
 				else if(getSuit().contains("Diamond")) {return 3;}
-				else {throw new GameErrorException("Please do not specify an invalid suit.");}
+				else {throw new GameErrorException("Please do not specify an invalid suit.", "A3173");}
 			}
-			throw new GameErrorException("Please choose a valid card.");
+			throw new GameErrorException("Please choose a valid card.", "A2274");
 		}
 		catch(GameErrorException e) {UserInterface.displayException(e, 5); System.exit(0); return -1;}
 	}
@@ -108,7 +114,7 @@ public class Card31 extends PlayingCard implements Comparable<Card31>{
 	 */
 	public static ArrayList<String> generateRandomStrings(ArrayList<String> suitsToPlayWith){
 		try {
-			if(suitsToPlayWith.size() >= 5) {throw new PlayingCardException("suitsToPlayWith.size() >= 4");}
+			if(suitsToPlayWith.size() >= 5) {throw new PlayingCardException("suitsToPlayWith.size() > 4", "R4491");}
 			else if(suitsToPlayWith.size() == 4) {return CustomModeFrame.toStringArrayList(RANDOM_SUIT_STRINGS);}
 			else if(suitsToPlayWith.size() == 3) {
 				ArrayList<String> possibleCardStrings = new ArrayList<String>();
@@ -139,8 +145,8 @@ public class Card31 extends PlayingCard implements Comparable<Card31>{
 				for(String str : suitsToPlayWith) {possibleCardStrings.add("Random not "+str);}
 				return possibleCardStrings;
 			}
-			else if(suitsToPlayWith.size() == 1) {throw new PlayingCardException("suitsToPlayWith.size() == 1");}
-			else {throw new PlayingCardException("suitsToPlayWith.size() == 0");}
+			else if(suitsToPlayWith.size() == 1) {throw new PlayingCardException("suitsToPlayWith.size() == 1", "R4082");}
+			else {throw new PlayingCardException("suitsToPlayWith.size() == 0", "R4765");}
 		}
 		catch(PlayingCardException e) {UserInterface.displayException(e, 5); return new ArrayList<String>();}
 	}
