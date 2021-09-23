@@ -3,10 +3,9 @@ import java.util.*;
 import baselineCustomClasses.*;
 public class CardAdder implements AI31Constants {
 	/**
-	 * Initializes the
-	 * @param low
-	 * @return
-	 * @throws PlayingCardException
+	 * Initializes a desk of cards, with specific limits.
+	 * @return an array full of cards
+	 * @throws PlayingCardException if something goes wrong setting up the playing cards
 	 */
 	public static ArrayList<Card31> init() throws PlayingCardException{
 		ArrayList<Card31> cards = new ArrayList<Card31>();
