@@ -29,6 +29,11 @@ import baselineCustomClasses.PlayingCardException;
  * </html>
  */
 @SuppressWarnings("serial")
+/**
+ * This class contains the setup for the custom game mode of the AI31 game.
+ * @author dong-yonkim
+ *
+ */
 public class CustomModeFrame extends JFrame implements ActionListener, AI31Constants, ItemListener, WindowListener{
 	/**
 	 * The panel that hosts all of the components.
@@ -578,7 +583,7 @@ public class CustomModeFrame extends JFrame implements ActionListener, AI31Const
 			UserInterface.displayError("Please enter a starting position value. Decimals are truncated.");
 			return;
 		}
-		if(info.humanCt!=1) {throw new GameErrorException("No starting position should be avaiable for multiplayer.");}
+		if(info.humanCt!=1) {throw new GameErrorException("No starting position should be avaiable for multiplayer.", "Z6146");}
 		int pos = (int)Double.parseDouble(startingPosition.getText());
 		if(pos<0) {UserInterface.displayError("Please do not enter an index smaller than 0 for your starting position."); startingPosition.setText(""); return;}
 		if(pos>=info.playerCt-1) {UserInterface.displayError("Please do not enter an index larger than or equal to the number "
@@ -711,7 +716,7 @@ public class CustomModeFrame extends JFrame implements ActionListener, AI31Const
 		if(box.getSelectedIndex()==0) {return;}
 		int counter = 0;
 		for(String s : removedCardsToString) {if(s.contains(((String)(box.getSelectedItem())).substring(6))) {counter++;}}
-		try {if(counter == sci.availableNums.size()-1) {throw new GameErrorException("Plesae do not attempt to remove the last card of a suit.");}}
+		try {if(counter == sci.availableNums.size()-1) {throw new GameErrorException("Plesae do not attempt to remove the last card of a suit.", "F0319");}}
 		catch(GameErrorException e) {UserInterface.displayException(e, 2);}
 		if(!find(removedCardsToString, (String)(box.getSelectedItem()))){removedCardsToString.add((String)(box.getSelectedItem()));
 		UserInterface.displayInfo("You have removed the card "+((String)(box.getSelectedItem()))+" from the list of available cards.", "Card removal successful.");}

@@ -23,8 +23,8 @@ public class Human extends Player {
 						"Choose a card to get rid of...");
 				value[1] = UserInterface.displayOptions("Which card from the middle do you want (1, 2, or 3)?", cardChoices,
 						"Choose a card you want from the middle...");
-				if(value[0]<0){throw new GameErrorException(value[0]+" is an invalid card index to remove from your hand.");}
-				else if(value[1]<0){throw new GameErrorException(value[1]+" is an invalid card index to request from the mid.");}
+				if(value[0]<0){throw new GameErrorException(value[0]+" is an invalid card index to remove from your hand.", "C4417");}
+				else if(value[1]<0){throw new GameErrorException(value[1]+" is an invalid card index to request from the mid.", "C4782");}
 				else{met=true; value[1]++; value[0]++;}
 				if(met){return value;}
 			}
@@ -46,11 +46,11 @@ public class Human extends Player {
 			//again, final turn
 		}
 		else if(decision == -1) {
-			try{throw new GameErrorException("Please do not close out the window... Error #B5545");}
+			try{throw new GameErrorException("Please do not close out the window...", "B5445");}
 			catch(GameErrorException e) {UserInterface.displayException(e, 5);}
 		}
 		else {
-			try{throw new GameErrorException("This should not be a choice. Error #K0645");}
+			try{throw new GameErrorException("This should not be a choice.","K0645");}
 			catch(GameErrorException e) {UserInterface.displayException(e, 5);}
 		}
 		return null;

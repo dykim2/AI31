@@ -117,12 +117,12 @@ public class Machine extends Player {
 				else{
 					try{throw new GameErrorException(
 							"This can't run if mid has three of a suit - " +
-							"no suit in hand has a match in mid... Error #H8457");}
+							"no suit in hand has a match in mid.","H8457");}
 					catch(GameErrorException e){UserInterface.displayException(e, 5); return conditions(-2);}
 				}
 				return increment(nums);
 			}
-			throw new GameErrorException("One condition must run. Error #I9232");
+			throw new GameErrorException("One condition must run.","I9232");
 		}
 		catch(GameErrorException e){
 			UserInterface.displayException(e, 5);
@@ -139,7 +139,7 @@ public class Machine extends Player {
 		try {
 			int[] nums = {0,0};
 			double[] maxPossibleSums = new double[7];
-			for(int i=0; i<suits.length; i++) {maxPossibleSums[i+2] = maxPossibleSum(suits[i], getUserInterface().getMiddleHand());}
+			for(int i=0; i<SUITS.length; i++) {maxPossibleSums[i+2] = maxPossibleSum(SUITS[i], getUserInterface().getMiddleHand());}
 			maxPossibleSums[0] = maxPossibleSum(getUserInterface().getMiddleHand());
 			maxPossibleSums[1] = middleHandSum();
 			maxPossibleSums[6] = sumOfHand();
@@ -150,12 +150,12 @@ public class Machine extends Player {
 			//found the max possible sum
 			if(index>1 && index<6) {
 				index-=2;
-				Card31 worst = worstCardLimiter(0, ' ', suits[index]);
+				Card31 worst = worstCardLimiter(0, ' ', SUITS[index]);
 				//they have three of that suit but it can be improved
 				if(worst!=null) {}
-				else {worst = worstCardInSuit(suits[index]);}//3 of a suit
+				else {worst = worstCardInSuit(SUITS[index]);}//3 of a suit
 				nums[0] = findCard(worst);
-				Card31 best = getUserInterface().getMiddleHand().bestCardInSuit(suits[index]);
+				Card31 best = getUserInterface().getMiddleHand().bestCardInSuit(SUITS[index]);
 				nums[1] = getUserInterface().getMiddleHand().findCard(best);
 				return increment(nums);
 				//find the worst card in the hand
@@ -193,7 +193,7 @@ public class Machine extends Player {
 				nums[0] = findCard(unidenticalNumberCard()); 
 				if(getMid().contains(matchingCards[0].getSuit())>=0 && 
 						getMid().contains(matchingCards[1].getSuit())>=0){
-					//cards of both suits exist in mid
+					//cards of both SUITS exist in mid
 					int value = getMid().bestCardInSuit(matchingCards[0].getSuit()).
 							compareByNumber(getMid().bestCardInSuit(matchingCards[1].getSuit()));
 					if(value>=0){
@@ -212,7 +212,7 @@ public class Machine extends Player {
 					nums[1] = getMid().findCard(
 							getMid().bestCardInSuit(matchingCards[1].getSuit()));
 				}
-				else{throw new GameErrorException("Something went wrong finding a suit of a common number card. Error #C9842");}
+				else{throw new GameErrorException("Something went wrong finding a suit of a common number card.","C9842");}
 			}
 			else{
 				if(getMid().sumOfHand()>sumOfHand()){return conditions(-2);}
@@ -242,7 +242,7 @@ public class Machine extends Player {
 				//2 of a suit - trying to get 2 of a suit and number
 				if(getMid().contains(matchingCards[0].getSpecialNumber())>=0){nums[1] = getMid().contains(matchingCards[0].getSpecialNumber());}
 				else if(getMid().contains(matchingCards[1].getSpecialNumber())>=0){nums[1] = getMid().contains(matchingCards[1].getSpecialNumber());}
-				else{throw new GameErrorException("Something went wrong here trying to do something I don't know. Error #I1111");}
+				else{throw new GameErrorException("Something went wrong here trying to do something I don't know.","I1111");}
 			}
 			else if(getMid().contains(rank[1])>=0 &&
 					maxPossibleSum(rank[1], getMid()) > sumOfHand()){
@@ -391,7 +391,7 @@ public class Machine extends Player {
 			else{return false;}
 
 		}
-		throw new GameErrorException("equalTens() only works with two equal tens, no more and no less. Error #D5645");
+		throw new GameErrorException("equalTens() only works with two equal tens, no more and no less.","D5645");
 	}
 	public double middleHandSum() throws GameErrorException{return getMid().sumOfHand();}
 	/* Preconditions: num is -1 or -2
@@ -400,7 +400,7 @@ public class Machine extends Player {
 	private int[] conditions(int num) throws GameErrorException{
 		int[] nums = new int[2];
 		if(num==-1){nums[0] = -1; nums[1] = -1;} else if(num==-2){nums[0] = -2; nums[1] = -2;}
-		else{throw new GameErrorException("The precondtions of this function have not been met. Error #H3187");}return nums;}
+		else{throw new GameErrorException("The precondtions of this function have not been met.","H3187");}return nums;}
 	private int[] increment(int[] original){for(int i=0; i<original.length; i++){original[i]++;}return original;}
 
 	//make the AIs not want to create a good hand in the mid unless needed

@@ -8,14 +8,14 @@ public class MiddleHand extends Player {
 	public MiddleHand(MiddleHand m, UserInterface u){this(u); addCard(m.getCard(0)); addCard(m.getCard(1)); addCard(m.getCard(2));}
 	public MiddleHand(ArrayList<Card31> a, UserInterface u){this(u); addCard(a.get(0)); addCard(a.get(1)); addCard(a.get(2));}
 	public int[] takeTurn(){
-		try{throw new GameErrorException("The middle should not be able to take a turn.");}
+		try{throw new GameErrorException("The middle should not be able to take a turn.", "Z0134");}
 		catch(GameErrorException e){UserInterface.displayException(e, 5); return null;}
 	}
 	public String toString(){
 		try{return "The cards in the middle are: "+getCard(0)+" (1), "+getCard(1)+" (2), and "+getCard(2)+" (3),\nSum: "+sumOfHand()+"\n";}
 		catch(GameErrorException e){
 			UserInterface.displayException(e, 5);
-			throw new NullPointerException("Something went wrong - there is no middle hand...");
+			throw new NullPointerException("The middle hand does not exist.");
 		}
 	}
 	//the hand that is face up; the contents are at all times visible to all players

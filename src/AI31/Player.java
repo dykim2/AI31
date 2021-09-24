@@ -4,7 +4,7 @@ import java.util.Collections;
 import baselineCustomClasses.GameErrorException;
 import baselineCustomClasses.PlayingCard;
 import baselineCustomClasses.PlayingCardException;
-public abstract class Player {
+public abstract class Player implements AI31Constants{
 	/**
 	 * The name of the Player.
 	 */
@@ -25,7 +25,6 @@ public abstract class Player {
 	 * The default number of lives for Players.
 	 */
 	private static int lifeCount = 1;
-	public static final String[] suits = {"hearts", "diamonds", "spades", "clubs"};
 	private boolean startingPlayer = false;
 	private boolean alive = true;
 	//constructors
@@ -65,14 +64,13 @@ public abstract class Player {
 	public void removeLife(){lives--;}
 	public boolean setStarting(boolean start) {
 		try {
-			if(!isAlive()) {throw new GameErrorException("Please do not attempt to set the staring status of a dead player.");}
+			if(!isAlive()) {throw new GameErrorException("Please do not attempt to set the staring status of a dead player.", "Y9546");}
 			startingPlayer = start;
 			return true;
 		}
 		catch(GameErrorException e) {UserInterface.displayException(e, 3); return false;}
 	}
 	public void die() {alive = false; lives = 0;}
-	private void updateScore(){}//updates the score - a meme function, as it is not used
 	class CardSum implements Comparable<CardSum>{
 		private String suitChoice;
 		private int suitSum;
@@ -101,7 +99,7 @@ public abstract class Player {
 	public String highestSuit() throws GameErrorException{
 		int highSum = -50;
 		String highSuit = "";
-		for(String s : suits){
+		for(String s : SUITS){
 			int suitSum = 0;
 			for(int i=0; i<hand.size(); i++){if(hand.get(i).getSuit().equalsIgnoreCase(s)) {suitSum+=hand.get(i).getNumber();}}
 			if(suitSum>highSum){
@@ -113,7 +111,7 @@ public abstract class Player {
 	}//finds the suit with the highest point value
 	public int highestValue() throws GameErrorException{
 		int highSum = -50;
-		for(String s : suits){
+		for(String s : SUITS){
 			int suitSum = 0;
 			for(int i=0; i<hand.size(); i++){if(hand.get(i).getSuit().equalsIgnoreCase(s)){suitSum+=hand.get(i).getNumber();}}
 			if(suitSum>highSum){highSum = suitSum;}
@@ -121,15 +119,15 @@ public abstract class Player {
 		return highSum;
 	}
 	/**
-	 * This method, only used when a player
-	 * @return
+	 * This method, only used when a player has three of a 
+	 * @return the score provided by the triple numbers
 	 * @throws GameErrorException - if the preconditions aren't met (there must be three of a number and not one of the three of a number can be an ace).
 	 * If even one card's number is an ace, all three will for the first condition (3 identical numbers) to be met.
 	 */
 	public double tripleNumber() throws GameErrorException {
 		try {
-			if(matchingNumber()!=3) {throw new GameErrorException("Please do not attempt to use this method without 3 of a number.");} 
-			else if(matchingNumber() == 3 && getCard(1).getFace() == 'A') {throw new GameErrorException("Please do not attempt to use this method with 3 aces.");}
+			if(matchingNumber()!=3) {throw new GameErrorException("Please do not attempt to use this method without 3 of a number.", "E1206");} 
+			else if(matchingNumber() == 3 && getCard(1).getFace() == 'A') {throw new GameErrorException("Please do not attempt to use this method with 3 aces.", "E1985");}
 			//will be worth 1 king and 2 queens
 			if(!PlayingCard.getValueConditions(0)) {return 3*PlayingCard.getJackValue();}
 			else {return (PlayingCard.getJackValue()+1)*2+(PlayingCard.getJackValue()+2);}
@@ -199,11 +197,11 @@ public abstract class Player {
 	public String[] suitRank(){//rank of suits in terms of sums
 		int[] sumsOfSuits = {0,0,0,0};
 		String[] rank = new String[4];
-		for(int f=0; f<suits.length; f++){
-			for(int i=0; i<hand.size(); i++){if(hand.get(i).getSuit().equalsIgnoreCase(suits[f])){sumsOfSuits[f] += hand.get(i).getNumber();}}}
+		for(int f=0; f<SUITS.length; f++){
+			for(int i=0; i<hand.size(); i++){if(hand.get(i).getSuit().equalsIgnoreCase(SUITS[f])){sumsOfSuits[f] += hand.get(i).getNumber();}}}
 
 		ArrayList<CardSum> cardSums = new ArrayList<CardSum>(4);
-		for(int i=0; i<sumsOfSuits.length; i++){cardSums.add(new CardSum(sumsOfSuits[i],suits[i]));}
+		for(int i=0; i<sumsOfSuits.length; i++){cardSums.add(new CardSum(sumsOfSuits[i],SUITS[i]));}
 		Collections.sort(cardSums);
 		Collections.reverse(cardSums);
 		for(int i=0; i<4; i++){rank[i] = new String(cardSums.get(i).getSuitChoice());}
@@ -241,7 +239,7 @@ public abstract class Player {
 		}
 		catch(IndexOutOfBoundsException e){
 			UserInterface.displayException(e, 3);
-			throw new GameErrorException("Something went wrong trying to find the lowest card - seems like there is no lowest card");
+			throw new GameErrorException("Something went wrong trying to find the lowest card - seems like there is no lowest card", "Y5340");
 		}
 	}
 	public Card31 unidenticalSuitCard() throws GameErrorException{//only to use if matchingSuit() == 2
@@ -253,7 +251,7 @@ public abstract class Player {
 						return hand.get(i);
 					}
 				}
-				throw new GameErrorException("A card must be found.");
+				throw new GameErrorException("A card must be found.", "I0800");
 			}
 			catch(GameErrorException e){
 				UserInterface.displayException(e, 3);
@@ -261,7 +259,7 @@ public abstract class Player {
 			}
 		}
 		else{
-			throw new GameErrorException("unidenticalSuitCard() only works when the max number of cards in a suit is 2 (out of 3).");
+			throw new GameErrorException("unidenticalSuitCard() only works when the max number of cards in a suit is 2 (out of 3).", "V1567");
 		}
 	}
 	public Card31 unidenticalNumberCard() throws GameErrorException{
@@ -270,7 +268,7 @@ public abstract class Player {
 			else if(getCard(0).getSpecialNumber() == getCard(2).getSpecialNumber()){return getCard(1);}
 			else{return getCard(0);}
 		}
-		else{throw new GameErrorException("unidenticalNumberCard() only works when the max # of common number cards is 2 (out of 3).");}
+		else{throw new GameErrorException("unidenticalNumberCard() only works when the max # of common number cards is 2 (out of 3).","V1893");}
 	}
 	public Card31 worstCardLimiter(int num, char f, String suit1){
 		if(num==0 && suit1.equalsIgnoreCase("") && f==' '){UserInterface.displayError("Why use this function if you're not going to enter values?");return null;}
@@ -375,9 +373,9 @@ public abstract class Player {
 		if(m.bestCardInSuit(rank[2])!=null){thirdMaxSum+=m.bestCardInSuit(rank[2]).getNumber();}
 		if(maxSum == secondMaxSum && secondMaxSum == thirdMaxSum){return maxSum;}
 		ArrayList<Double> sums = new ArrayList<Double>();
-		sums.add(new Double(maxSum));
-		sums.add(new Double(secondMaxSum));
-		sums.add(new Double(thirdMaxSum));
+		sums.add(maxSum);
+		sums.add(secondMaxSum);
+		sums.add(thirdMaxSum);
 		Collections.sort(sums);
 		Collections.reverse(sums);
 		return sums.get(0);
@@ -417,9 +415,9 @@ public abstract class Player {
 		if(m.bestCardInSuit(rank[2])!=null){thirdMaxSum+=m.bestCardInSuit(rank[2]).getNumber();}
 		if(maxSum == secondMaxSum && secondMaxSum == thirdMaxSum){return maxSum;}
 		ArrayList<Double> sums = new ArrayList<Double>();
-		sums.add(new Double(maxSum));
-		sums.add(new Double(secondMaxSum));
-		sums.add(new Double(thirdMaxSum));
+		sums.add(maxSum);
+		sums.add(secondMaxSum);
+		sums.add(thirdMaxSum);
 		Collections.sort(sums);
 		Collections.reverse(sums);
 		return sums.get(0);
@@ -450,7 +448,7 @@ public abstract class Player {
 		if(getCard(0).getSpecialNumber() == getCard(1).getSpecialNumber()){return 0;}
 		else if(getCard(0).getSpecialNumber() == getCard(2).getSpecialNumber()){return 2;}
 		else if(getCard(1).getSpecialNumber() == getCard(2).getSpecialNumber()){return 1;}
-		else{throw new GameErrorException("Something went wrong finding the common special number index.");}
+		else{throw new GameErrorException("Something went wrong finding the common special number index.", "G6666");}
 	}
 	//goal of function: move two cards around
 	public void moveCardsAround(int loc0, int loc1) {

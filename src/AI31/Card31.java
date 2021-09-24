@@ -52,7 +52,7 @@ public class Card31 extends PlayingCard implements Comparable<Card31>{
 	 * <html>
 	 * DO NOT USE if the card does not have a suit that has the word "random" in it.<br>
 	 * @see AI31.UserInterface#generateSuitCard(int)
-	 * @return a number in correspondance with the guidelines set by the method generateSuitCard(int)
+	 * @return a number in correspondence with the guidelines set by the method generateSuitCard(int)
 	 */
 	public int randomCardNum() {
 		try {
