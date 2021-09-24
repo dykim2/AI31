@@ -167,8 +167,8 @@ public class UserInterface extends JFrame implements AI31Constants{
 	/*VVVVVVV Constructor and construction methods VVVVVVV*/
 	/**
 	 * Creates the game. It's that simple.
-	 * @throws PlayingCardException
-	 * @throws GameErrorException
+	 * @throws PlayingCardException if something goes wrong setting up the playing cards
+	 * @throws GameErrorException if something goes wrong while playing the game
 	 */
 	public UserInterface() throws PlayingCardException, GameErrorException{
 		//setting up the ArrayLists
@@ -407,8 +407,8 @@ public class UserInterface extends JFrame implements AI31Constants{
 			humanCount = 1;
 			if(names.size()==0) {
 				int decision = 1;
-						//decision = JOptionPane.showOptionDialog(null, "Would you like to set the AI names?", "Custom AI names!",
-						//JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, null, 1);
+				//decision = JOptionPane.showOptionDialog(null, "Would you like to set the AI names?", "Custom AI names!",
+				//JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, null, 1);
 				if(decision==0) {
 					while(names.size()<playerCount-1) {
 						String name;
@@ -593,6 +593,9 @@ public class UserInterface extends JFrame implements AI31Constants{
 		finally{if(errorFound){displayError("What is this error?");}}
 
 	}
+	/**
+	 * Sets up the default game. You (the player) have the name Player and the Ai names are random.
+	 */
 	protected void setUpDefaultGame() {
 		try {
 			addCards();
@@ -928,16 +931,18 @@ public class UserInterface extends JFrame implements AI31Constants{
 		try{if(players.get(playerTurn)!=null){processTurns();}}
 		catch(PlayingCardException e){
 			displayException(e, 0);
-			throw new GameErrorException("Something went wrong swapping cards. Error #P8732");
+			try {
+				throw new GameErrorException("Something went wrong swapping cards.","P8732");
+			}
+			catch(GameErrorException ex) {displayException(ex, 0);}
 		}
 		catch(GameErrorException e) {displayException(e, 0);}
 		catch(Exception e) {displayException(e, 0);}
 	}
 	/**
 	 * Essentially processes the turns of each player (takes care of and organizes the results of each player's turn)
-	 * @throws GameErrorException
+	 * @throws GameErrorException - if something =goes wrong passing the player's turn or if the player does not make a decision
 	 * @throws PlayingCardException
-	 * @see the below note that starts with "NOTE" in all capital letters
 	 */
 	protected void processTurns() throws GameErrorException, PlayingCardException{
 		//this function does the regular turns
@@ -969,9 +974,9 @@ public class UserInterface extends JFrame implements AI31Constants{
 			else if(decision == -1){
 				/* pass */
 				panel.addText(players.get(playerTurn).getName()+": PASS\n");}
-			else if(decision==0){throw new GameErrorException("A decision must be made. Please try again.");}
+			else if(decision==0){throw new GameErrorException("A decision must be made. Please try again.", "O5328");}
 			else{/* This should not run, but if it does, I will throw an exception */
-				throw new GameErrorException("An error occured trying to pass.");}
+				throw new GameErrorException("An error occured trying to pass.", "O7742");}
 			moveTurnCounter();
 		}
 		panel.addText(players.get(players.size()-1)+"\n");
@@ -1460,6 +1465,7 @@ public class UserInterface extends JFrame implements AI31Constants{
 	 * 13: Spades, Clubs, or Hearts.<br>
 	 * @param condition - the number of the choice of suits (which number represents the suits you want?)
 	 * <b> Let me know if I missed any! </b>
+	 * @throws GameErrorException if the given condition is invalid or there are no available cards for the given conditions
 	 */
 	protected Card31 generateSuitCard(int condition) throws GameErrorException{
 		ArrayList<String> chosenSuits = new ArrayList<String>(3);
@@ -1521,7 +1527,7 @@ public class UserInterface extends JFrame implements AI31Constants{
 			chosenSuits.add("hearts");
 			break;
 		default:
-			throw new GameErrorException("Please enter a valid index for a suit or combination of suits (read the javadoc).");
+			throw new GameErrorException("Please enter a valid index for a suit or combination of suits (read the javadoc).", "E3295");
 		}
 		Collections.shuffle(cards);
 		Collections.shuffle(chosenSuits);
@@ -1529,7 +1535,7 @@ public class UserInterface extends JFrame implements AI31Constants{
 			int rand = new Random().nextInt(cards.size());
 			for(String s : chosenSuits) {if(s.equalsIgnoreCase(cards.get(rand).getSuit())) {return cards.remove(rand);} Collections.shuffle(chosenSuits);}
 			for(int i=0; i<chosenSuits.size(); i++) {if(suitAvailable(chosenSuits.get(i))) {break;}
-			if(i==chosenSuits.size()-1) {throw new GameErrorException("No cards that match the given suit parameters are currently available.");}}
+			if(i==chosenSuits.size()-1) {throw new GameErrorException("No cards that match the given suit parameters are currently available.", "G1985");}}
 
 		}
 		//throw new GameErrorException("No cards that match the given suit parameters are currently available.");
@@ -1539,6 +1545,7 @@ public class UserInterface extends JFrame implements AI31Constants{
 	 * @param suit - the first suit you want to add
 	 * @param suits - all the remaining suits you want to add
 	 * @return a card that matches the specified suit
+	 * @throws GameErrorException - if there are no available cards given the selected suit
 	 */
 	protected Card31 generateSuitCard(String suit, String...suits) throws GameErrorException{
 		if(suits == null || suits.length > 2) {return null;}
@@ -1551,10 +1558,9 @@ public class UserInterface extends JFrame implements AI31Constants{
 			int rand = new Random().nextInt(cards.size());
 			for(String s : chosenSuits) {if(s.equalsIgnoreCase(cards.get(rand).getSuit())) {return cards.remove(rand);} Collections.shuffle(chosenSuits);}
 			for(int i=0; i<chosenSuits.size(); i++) {if(suitAvailable(chosenSuits.get(i))) {break;}
-			if(i==chosenSuits.size()-1) {throw new GameErrorException("No cards that match the given suit parameters are currently available.");}}
+			if(i==chosenSuits.size()-1) {throw new GameErrorException("No cards that match the given suit parameters are currently available.", "B663");}}
 
 		}
-		//throw new GameErrorException("No cards that match the given suit parameters are currently available.");
 	}
 	/**
 	 * How many available cards per suit are there?
@@ -1582,15 +1588,22 @@ public class UserInterface extends JFrame implements AI31Constants{
 		if(firstTurn == 0){firstTurn = -1; panel.addText("\nFINAL TURN!\n\n");}
 		else if(firstTurn == 1){firstTurn = 0;}
 	}
+	/**
+	 * Shuffles the given array.
+	 * @param <T> - the reference object of the array 
+	 * @param info 0- the array that is intended to be shuffled
+	 * @return a shuffled copy of the array
+	 */
 	protected <T> T[] shuffle(T[] info) {
 		ArrayList<T> aList = (ArrayList<T>) Arrays.asList(info);
 		Collections.shuffle(aList);
 		return aList.toArray(info);
 	}
 	/*^^^^^^^^^^ Processing the player's turns ^^^^^^^^^^*/
-	/*VVVVVVVVVV Obtaining elements VVVVVVVVVV*
-	 /**
-	 * Returns an exact copy of the middle hand.
+	/*VVVVVVVVVV Obtaining elements VVVVVVVVVV*/
+	/**
+	 * Gets a copy of the middle hand's contents
+	 * @return a deep copy of the Middle hand (not the same object)
 	 */
 	protected MiddleHand getMiddleHand(){
 		MiddleHand copy = new MiddleHand(this);
@@ -1697,6 +1710,7 @@ public class UserInterface extends JFrame implements AI31Constants{
 		else {timer.stop();}
 	}
 	/**
+	 * Starts or ends the non repeating timer.
 	 * The only difference: this will affect the non-repeating timer, not the repeating timer
 	 * @param sOe - true if the game is starting and you want to restart the timer, false if you want to end the game.
 	 * @see #startOrEndTimer(boolean)
@@ -1707,8 +1721,11 @@ public class UserInterface extends JFrame implements AI31Constants{
 		else {nonRepeatTimer.stop();}
 	}
 	/**
-	 * @see #updateTimer(int)
+	 * Updates the speed of the non repeating timer.
 	 * Note that this applies for the non-repeating timer, not the repeating timer.
+	 * @param ms - the amount (in milliseconds) the timer will run for
+	 * @see #updateTimer(int)
+	 * 
 	 */
 	protected void updateNonRepeatTimer(int ms) {
 		nonRepeatTimer.setDelay(ms);
@@ -1736,7 +1753,7 @@ public class UserInterface extends JFrame implements AI31Constants{
 		if(mode.equalsIgnoreCase("custom")) {isCustom = true; okMode = true;}
 		if(mode.equalsIgnoreCase("competition") || mode.equalsIgnoreCase("friendly")) {okMode = true;}
 		if(mode.equalsIgnoreCase("combination")) {okMode = true;}
-		if(mode.equals("") || mode == null || !okMode){try {throw new GameErrorException("Please do not attempt to use a nonexistent game mode.");}
+		if(mode.equals("") || mode == null || !okMode){try {throw new GameErrorException("Please do not attempt to use a nonexistent game mode.", "I4204");}
 		catch(GameErrorException e) {displayException(e, 0); displayError("Please choose a different mode next time."); System.exit(0);};}
 		else{gameMode = mode;}
 	}
