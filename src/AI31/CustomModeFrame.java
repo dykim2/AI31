@@ -85,7 +85,11 @@ public class CustomModeFrame extends JFrame implements ActionListener, AI31Const
 	private int randomCount2 = -1;
 	private static final int ALL_ROUNDS = -2;		
 	protected final SuitRandom antiQuantity = new SuitRandom(-15353, -15353);//this should but can't be static, regardless of where I place it
-
+	/**
+	 * A subclass of CustomModeFrame that holds the information provided by the frame.
+	 * @author dong-yonkim
+	 *
+	 */
 	class CustomModeInfo{
 		protected int lowNum;
 		protected int aceVal;
@@ -99,6 +103,9 @@ public class CustomModeFrame extends JFrame implements ActionListener, AI31Const
 		protected int singlePlayerLoc;
 		protected ArrayList<Integer> multiPlayerLoc;
 		protected int startingPlayerLoc;
+		/**
+		 * Creates a new set of custom info with default values for all.
+		 */
 		public CustomModeInfo() {
 			lowNum = 7;
 			aceVal = 11;
@@ -113,6 +120,21 @@ public class CustomModeFrame extends JFrame implements ActionListener, AI31Const
 			multiPlayerLoc = new ArrayList<Integer>();
 			startingPlayerLoc = 0;
 		}
+		/**
+		 * Creates a new set of custom mode info with the given parameters.
+		 * @param ln - the lowest number in the deck of cards (say the deck was from 7 to A, then the lowest number is 7)
+		 * @param av - how much aces are worth
+		 * @param jv - how much jacks are worth
+		 * @param hc - how many human players there are
+		 * @param pc - how many total players there are
+		 * @param lc - how many lives per person exist
+		 * @param sc - do players start with specific cards or not?
+		 * @param uta - will the main text area be used?
+		 * @param efc - are the face card values all equal to each other?
+		 * @param spl - the location of the human player in regards to the players arraylist (competition custom only)
+		 * @param mpl - the locations of human players in regards to the players arraylist (combination custom only)
+		 * @param startLoc - the location of the starting player in the players array
+		 */
 		public CustomModeInfo(int ln, int av, int jv, int hc, int pc, int lc, boolean sc, boolean uta, boolean efc, int spl, ArrayList<Integer> mpl, int startLoc) {
 			lowNum = ln;
 			aceVal = av;
@@ -127,6 +149,10 @@ public class CustomModeFrame extends JFrame implements ActionListener, AI31Const
 			multiPlayerLoc = new ArrayList<Integer>();
 			startingPlayerLoc = startLoc;
 		}
+		/**
+		 * Creates a new set of custom mode info by copying the information from another CustomModeInfo.
+		 * @param in - the CustomModeInfo object you want to copy information from
+		 */
 		public CustomModeInfo(CustomModeInfo in) {
 			this.lowNum = in.lowNum;
 			this.aceVal = in.aceVal;
@@ -159,14 +185,19 @@ public class CustomModeFrame extends JFrame implements ActionListener, AI31Const
 			return info;
 		}
 	}
+	/**
+	 * A bt of bonus player information for the frame: what cards and what index each player have/is
+	 * @author dong-yonkim
+	 *
+	 */
 	class PlayerCard{
 		protected Card31[] cards;
 		protected int index;
-		public PlayerCard() {
+		private PlayerCard() {
 			index = -1;
 			cards = new Card31[3];
 		}
-		public PlayerCard(int index) {
+		private PlayerCard(int index) {
 			this();
 			this.index = index;
 		}
@@ -320,6 +351,9 @@ public class CustomModeFrame extends JFrame implements ActionListener, AI31Const
 		catch(GameErrorException ex) {UserInterface.displayException(ex, 2); System.exit(0);}
 		catch(Exception ex) {UserInterface.displayException(ex, 2);}
 	}
+	/**
+	 * 
+	 */
 	private void okButton() {
 		if(info.multiPlayerLoc!=null) {info.multiPlayerLoc.clear();}
 		else {info.multiPlayerLoc = new ArrayList<Integer>();}
