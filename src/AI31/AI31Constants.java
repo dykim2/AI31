@@ -38,39 +38,39 @@ public interface AI31Constants {
 	 */
 	public static final int LIVES_AND_ELIMINATIONS = 2;
 	/**
-	 * 
+	 * Signifies that the game will be displaying life loss, but not elimination dialog boxes.
 	 */
 	public static final int LIVES_NOT_ELIMINATIONS = 1;
 	/**
-	 * 
+	 * Signifies that the game will not be displaying life loss dialog boxes, but instead displaying elimination ones only.
 	 */
 	public static final int NO_LIVES_AND_ELIMINATIONS = 0;
 	/**
-	 * 
+	 * Signifies that the game will not display either life loss or elimination dialog boxes.
 	 */
 	public static final int NO_LIVES_NOR_ELIMINATIONS = -1;
 	/**
-	 * 
+	 * The options for how fast the game runs.
 	 */
 	public static final String[] TIMER_OPTIONS = {"Choose the speed of the game:", "0 Seconds", "0.01 Seconds", "1 Second", 
 			"2 Seconds", "3 Seconds", "4 Seconds", "5 Seconds", "Choose your own timer..."};
 	/**
-	 * 
+	 * The options for what display option you want.
 	 */
 	public static final String[] DISPLAY_OPTIONS = {"Choose which dialog boxes you want:", "No lives nor eliminations",
 			"Eliminations but no lives", "Lives but no eliminations", "Lives and eliminations"};
 	/**
-	 * 
+	 * The game mode options.
 	 */
 	public static final String[] MODE_OPTIONS = {"Choose the game mode:", "1: Competition (facing AIs)", "2: Friendly (facing local players)",
 			"3: Combination (facing both local and AI players)", "4: Custom (choose from a variety of different setttings)"};
 	/**
-	 * 
+	 * The options for the back of the deck colors.
 	 */
 	public static final String[] CARD_BACK_OPTIONS = {"Choose the color of the back of the cards: ", "Blue", "Yellow", "Red", "Green",
 			"Gray", "Purple", "Orange", "Brown", "Aqua", "Black"};
 	/**
-	 * 
+	 * All cards - from 2 of hearts to ace of clubs
 	 */
 	public static final PlayingCard[] ALL_CARDS = PlayingCard.buildAllCards();
 }
