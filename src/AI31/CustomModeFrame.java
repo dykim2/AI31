@@ -39,11 +39,29 @@ public class CustomModeFrame extends JFrame implements ActionListener, AI31Const
 	 * The panel that hosts all of the components.
 	 */
 	private JPanel primaryPanel = new JPanel(new GridBagLayout());
+	/**
+	 * 
+	 */
 	private JTextField lowCardNum;
+	/**
+	 * 
+	 */
 	private JLabel lowCardLab;
+	/**
+	 * 
+	 */
 	private JTextField aceValue;
+	/**
+	 * 
+	 */
 	private JLabel aceLab;
+	/**
+	 * 
+	 */
 	private JTextField jackValue;
+	/**
+	 * 
+	 */
 	private JLabel jackLab;
 	private JTextField playerCount;
 	private JLabel playerLab;
@@ -312,7 +330,7 @@ public class CustomModeFrame extends JFrame implements ActionListener, AI31Const
 	}
 	@Override
 	/**
-	 * Records all of the RadioButton, ComboBox, and Button actions and runs the appropiate method to correspond with the pressed button.
+	 * Records all of the RadioButton, ComboBox, and Button actions and runs the appropriate method to correspond with the pressed button.
 	 */
 	public void actionPerformed(ActionEvent e) {
 		try {
@@ -352,7 +370,7 @@ public class CustomModeFrame extends JFrame implements ActionListener, AI31Const
 		catch(Exception ex) {UserInterface.displayException(ex, 2);}
 	}
 	/**
-	 * 
+	 * Executed when the OK button is pressed on the custom mode frame.
 	 */
 	private void okButton() {
 		if(info.multiPlayerLoc!=null) {info.multiPlayerLoc.clear();}
@@ -383,8 +401,17 @@ public class CustomModeFrame extends JFrame implements ActionListener, AI31Const
 		if(info.singlePlayerLoc == -1 && info.humanCt == 1) {info.singlePlayerLoc = 0;}
 		//UserInterface method to start the game
 	}
+	/**
+	 * Disables specific cards in this custom mode frame.
+	 */
 	private void specificCardsOff() {info.specificCards = false;}
+	/**
+	 * Enables specific cards in this custom mode frame.
+	 */
 	private void specificCardsOn() {info.specificCards = true;}
+	/**
+	 * Confirms the top button options. 
+	 */
 	private void confirmTop() {
 		try {
 			try {
@@ -405,6 +432,8 @@ public class CustomModeFrame extends JFrame implements ActionListener, AI31Const
 			if(((JCheckBox)specificCardsFeatures.get(2)).isSelected()) {sci.availableSuits.add("Diamonds");}
 			if(((JCheckBox)specificCardsFeatures.get(3)).isSelected()) {sci.availableSuits.add("Hearts");}
 			if(((JCheckBox)specificCardsFeatures.get(4)).isSelected()) {sci.availableSuits.add("Spades");}
+			for(int i=6; i<15; i++) {if(((JCheckBox)specificCardsFeatures.get(i)).isSelected()) {sci.availableNums.add(i-4);}}
+			/*
 			if(((JCheckBox)specificCardsFeatures.get(6)).isSelected()) {sci.availableNums.add(2);}
 			if(((JCheckBox)specificCardsFeatures.get(7)).isSelected()) {sci.availableNums.add(3);}
 			if(((JCheckBox)specificCardsFeatures.get(8)).isSelected()) {sci.availableNums.add(4);}
@@ -414,10 +443,15 @@ public class CustomModeFrame extends JFrame implements ActionListener, AI31Const
 			if(((JCheckBox)specificCardsFeatures.get(12)).isSelected()) {sci.availableNums.add(8);}
 			if(((JCheckBox)specificCardsFeatures.get(13)).isSelected()) {sci.availableNums.add(9);}
 			if(((JCheckBox)specificCardsFeatures.get(14)).isSelected()) {sci.availableNums.add(10);}
+			*/
+			for(int i=15; i<19; i++) {if(((JCheckBox)specificCardsFeatures.get(i)).isSelected()) 
+			{sci.availableNums.add(i-4); sci.availableFaces.add(FACE_CARDS[i-15]);}}
+			/*
 			if(((JCheckBox)specificCardsFeatures.get(15)).isSelected()) {sci.availableNums.add(11); sci.availableFaces.add('J');}
 			if(((JCheckBox)specificCardsFeatures.get(16)).isSelected()) {sci.availableNums.add(12); sci.availableFaces.add('Q');}
 			if(((JCheckBox)specificCardsFeatures.get(17)).isSelected()) {sci.availableNums.add(13); sci.availableFaces.add('K');}
 			if(((JCheckBox)specificCardsFeatures.get(18)).isSelected()) {sci.availableNums.add(14); sci.availableFaces.add('A');}
+			*/
 			if(((JRadioButton)specificCardsFeatures.get(20)).isSelected()) {sci.specificCardsEnabled = true;}//22 is the button	
 			else {sci.specificCardsEnabled = false; sci.playerCards = null;}
 			for(int i=0; i<sci.availableNums.size(); i++) {
