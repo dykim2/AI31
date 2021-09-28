@@ -40,11 +40,11 @@ public class CustomModeFrame extends JFrame implements ActionListener, AI31Const
 	 */
 	private JPanel primaryPanel = new JPanel(new GridBagLayout());
 	/**
-	 * 
+	 * A field that is used to input the lowest card number.
 	 */
 	private JTextField lowCardNum;
 	/**
-	 * 
+	 * A label used to describe the above text field.
 	 */
 	private JLabel lowCardLab;
 	/**
