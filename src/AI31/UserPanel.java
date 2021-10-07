@@ -953,16 +953,14 @@ public class UserPanel extends JPanel implements ActionListener, AI31Constants{
 	protected void updatePlayerHand() {//the single player version
 		addPlayers();
 		playerInfo.setText("Your cards:");
-		try {playerSum.setText("Sum: "+players.get(userInterface.getHumanPlayer()).sumOfHand());}
-		catch (GameErrorException e) {UserInterface.displayException(e, 1);}
+		playerSum.setText("Sum: "+players.get(userInterface.getHumanPlayer()).sumOfHand());
 		updateCardLabels(2,-6);
 	}
 	protected void updateSpecificPlayerHand() {
 		addPlayers();
 		if(!players.get(userInterface.getPlayerTurn()).getClass().getName().equals("AI31.Human")){return;}
 		playerInfo.setText(players.get(userInterface.getPlayerTurn()).getName()+"'s cards:");
-		try {playerSum.setText("Sum: "+players.get(userInterface.getPlayerTurn()).sumOfHand());}
-		catch (GameErrorException e) {UserInterface.displayException(e, 1);}
+		playerSum.setText("Sum: "+players.get(userInterface.getPlayerTurn()).sumOfHand());
 		updateCardLabels(2,1);
 	}
 	protected void clearPlayerHand() {
@@ -972,8 +970,7 @@ public class UserPanel extends JPanel implements ActionListener, AI31Constants{
 	}
 	protected void updateMiddleHand() {
 		addPlayers();
-		try {midSum.setText("Sum: "+players.get(players.size()-1).sumOfHand());} 
-		catch (GameErrorException e) {UserInterface.displayException(e, 1);}
+		midSum.setText("Sum: "+players.get(players.size()-1).sumOfHand());
 		updateCardLabels(0,-8);
 	}
 	protected void updateSpeed() {if(speed==0) {UserInterface.displayWarning(
@@ -1091,8 +1088,7 @@ public class UserPanel extends JPanel implements ActionListener, AI31Constants{
 			if(userInterface.getTurnStatus() == -1 && !userInterface.playersAlive()) {
 				for(int i=3; i<6; i++) {if(players.get(subType)!=null) {
 					list.get(i).setIcon(new ImageIcon(players.get(subType).getCard(i-3).getImage()));}}  
-				try {if(players.get(subType) != null) {sumOfCPU.setText("Sum: "+players.get(subType).sumOfHand());}}
-				catch (GameErrorException e) {UserInterface.displayException(e, 1);} 
+				if(players.get(subType) != null) {sumOfCPU.setText("Sum: "+players.get(subType).sumOfHand());} 
 				break;
 			}
 			else {for(int i=3; i<6; i++) {list.get(i).setIcon(new ImageIcon(backImage));}break;}
@@ -1108,8 +1104,7 @@ public class UserPanel extends JPanel implements ActionListener, AI31Constants{
 						break;
 					}
 				}//cards enabled/visible
-				try {playerSum.setText("Sum: "+players.get(userInterface.getPlayerTurn()).sumOfHand());}
-				catch(GameErrorException e) {UserInterface.displayException(e, 1);}
+				playerSum.setText("Sum: "+players.get(userInterface.getPlayerTurn()).sumOfHand());
 			}
 			break;
 		}

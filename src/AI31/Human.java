@@ -56,28 +56,16 @@ public class Human extends Player {
 		return null;
 	}
 	public String toString(){
-		if(!getUserInterface().isMultiPlayer()) {try{return "My cards are: "+getHand().get(0)+" (1), "
+		if(!getUserInterface().isMultiPlayer()) {return "My cards are: "+getHand().get(0)+" (1), "
 				+ ""+getHand().get(1)+" (2), and "+getHand().get(2)+" (3),\nSum: "+sumOfHand()+"\n";}
-		catch(GameErrorException e){
-			UserInterface.displayException(e, 5);
-			throw new NullPointerException("Something went wrong - there is no hand...");
-		}}
 		else {
 			if(getName().charAt(getName().length()-1) != 'S' || getName().charAt(getName().length()-1) != 's') {
-				try{return "My ("+getName()+")'s cards are: "+getHand().get(0)+" (1), "
-						+ ""+getHand().get(1)+" (2), and "+getHand().get(2)+" (3),\nSum: "+sumOfHand()+"\n";}
-				catch(GameErrorException e){
-					UserInterface.displayException(e, 5);
-					throw new NullPointerException("Something went wrong - there is no hand...");
-				}
+				return "My ("+getName()+")'s cards are: "+getHand().get(0)+" (1), "
+						+ ""+getHand().get(1)+" (2), and "+getHand().get(2)+" (3),\nSum: "+sumOfHand()+"\n";
 			}
 			else {
-				try{return "My ("+getName()+")' cards are: "+getHand().get(0)+" (1), "
-						+ ""+getHand().get(1)+" (2), and "+getHand().get(2)+" (3),\nSum: "+sumOfHand()+"\n";}
-				catch(GameErrorException e){
-					UserInterface.displayException(e, 5);
-					throw new NullPointerException("Something went wrong - there is no hand...");
-				}
+				return "My ("+getName()+")' cards are: "+getHand().get(0)+" (1), "
+						+ ""+getHand().get(1)+" (2), and "+getHand().get(2)+" (3),\nSum: "+sumOfHand()+"\n";
 			}
 		}
 	}
