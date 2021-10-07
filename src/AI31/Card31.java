@@ -20,9 +20,15 @@ public class Card31 extends PlayingCard implements Comparable<Card31>{
 			"Random Spade or Heart", "Random Spade or Diamond", "Random Club or Heart", "Random Club or Diamond", "Random Heart or Diamond",
 			"Random not Spade", "Random not Club", "Random not Heart", "Random not Diamond"};
 
-
+	/**
+	 * Creates a new Card (for the 31 game) with the given number and the hearts suit.
+	 * @param num
+	 */
 	public Card31(int num){super(num, "hearts");}
-	public Card31(Card31 c){super(c);}
+	/**
+	 * 
+	 * @param c
+	 */
 	public Card31(PlayingCard c) {super(c);}
 	public Card31(int num, String su){super(num,su);}
 	public Card31(char fa, String su){super(fa, su);}
