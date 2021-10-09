@@ -34,7 +34,7 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import baselineCustomClasses.GUISetUpException;
-import baselineCustomClasses.GameErrorException;
+import baselineCustomClasses.GameException;
 /**
  * @author dykim
  * This panel is the base of the components. It takes care of updating each component with the numbers nescessary for the component.
@@ -825,7 +825,7 @@ public class UserPanel extends JPanel implements ActionListener, AI31Constants{
 			changeStatus(-2, false);
 			userInterface.deal();
 		}
-		catch(GameErrorException e1) {UserInterface.displayException(e1, 1);}
+		catch(GameException e1) {UserInterface.displayException(e1, 1);}
 		catch(Exception e1) {UserInterface.displayException(e1, 1);}
 	}
 	protected void repeatingTimerAction() {
@@ -843,7 +843,7 @@ public class UserPanel extends JPanel implements ActionListener, AI31Constants{
 			}
 			if(userInterface.playersAlive()) {
 				try {userInterface.gameplay();}
-				catch (GameErrorException e1) {UserInterface.displayException(e1, 1);}
+				catch (GameException e1) {UserInterface.displayException(e1, 1);}
 			}
 			else {
 				addText("\nAll player turns for the round are complete.\nPress the 'Finish Round' button to finish the round.\n\n");
@@ -1044,7 +1044,7 @@ public class UserPanel extends JPanel implements ActionListener, AI31Constants{
 			break;
 		}
 	}
-	protected void changeMidSum(int newSum) throws GameErrorException{if(newSum==-1) {midSum.setText("Mid sum");}else{addPlayers(); midSum.setText("Sum: "+players.get(players.size()-1).sumOfHand());}}
+	protected void changeMidSum(int newSum) throws GameException{if(newSum==-1) {midSum.setText("Mid sum");}else{addPlayers(); midSum.setText("Sum: "+players.get(players.size()-1).sumOfHand());}}
 	protected int getEliminationStatus() {return showEliminations;}
 	protected static int getSpeed() {return speed;}
 	protected void updateEliminationStatus(int status) {showEliminations = status;}

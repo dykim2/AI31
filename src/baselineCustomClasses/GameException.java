@@ -1,6 +1,6 @@
 package baselineCustomClasses;
 
-public class GameErrorException extends Exception {
+public class GameException extends Exception {
 	private String problem;
 	private String errorCode;
 	//private static final long serialVersionUID = 191L;
@@ -9,7 +9,7 @@ public class GameErrorException extends Exception {
 	 * @param cause
 	 * @param code - the error code of the thrown exception
 	 */
-	public GameErrorException(String cause, String code){
+	public GameException(String cause, String code){
 		problem = cause;
 		errorCode = code;
 	}

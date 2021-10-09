@@ -34,7 +34,7 @@ public class Game extends JFrame implements ActionListener{//scoreboard and such
 		setLocationRelativeTo(null);
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 	}
-	public static void main(String[] args) throws GameErrorException, PlayingCardException, InterruptedException{
+	public static void main(String[] args) throws GameException, PlayingCardException, InterruptedException{
 			Game ex = new Game();
 			ex.setVisible(true);
 	}

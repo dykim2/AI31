@@ -1,13 +1,36 @@
 package AI31;
 
-import javax.swing.*;
-import javax.swing.event.*;
-import java.awt.*;
-import java.awt.event.*;
-import java.io.PrintWriter;
-import java.io.StringWriter;
-import java.util.*;
-import baselineCustomClasses.GameErrorException;
+import java.awt.Component;
+import java.awt.FlowLayout;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Random;
+import javax.swing.AbstractButton;
+import javax.swing.ButtonGroup;
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
+import javax.swing.JComponent;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JRadioButton;
+import javax.swing.JTextField;
+import javax.swing.SwingUtilities;
+import baselineCustomClasses.GameException;
 import baselineCustomClasses.PlayingCard;
 import baselineCustomClasses.PlayingCardException;
 /**
@@ -25,7 +48,7 @@ import baselineCustomClasses.PlayingCardException;
  * Starting position (for combination and competition - will be decided by number of human players), <br>
  * (for combination) where each human player is located, <br>
  * and whether to use the text area in the middle.
- * @author dykim
+ * @author Dong-Yon
  * </html>
  */
 @SuppressWarnings("serial")
@@ -204,8 +227,8 @@ public class CustomModeFrame extends JFrame implements ActionListener, AI31Const
 		}
 	}
 	/**
-	 * A bt of bonus player information for the frame: what cards and what index each player have/is
-	 * @author dong-yonkim
+	 * A bit of bonus player information for the frame: what cards and what index each player have/is
+	 * @author dong-yon kim
 	 *
 	 */
 	class PlayerCard{
@@ -366,7 +389,7 @@ public class CustomModeFrame extends JFrame implements ActionListener, AI31Const
 			if(e.getSource() == end) {this.dispose();}
 		}
 		catch(NumberFormatException ex) {UserInterface.displayError("Please do not enter characters that do not belong.");}
-		catch(GameErrorException ex) {UserInterface.displayException(ex, 2); System.exit(0);}
+		catch(GameException ex) {UserInterface.displayException(ex, 2); System.exit(0);}
 		catch(Exception ex) {UserInterface.displayException(ex, 2);}
 	}
 	/**
@@ -646,12 +669,12 @@ public class CustomModeFrame extends JFrame implements ActionListener, AI31Const
 		lifeLab.setText("Value: "+life);
 		info.lifeCt = life;
 	}
-	private void startingPosition() throws GameErrorException{
+	private void startingPosition() throws GameException{
 		if(startingPosition.getText().length() == 0) {
 			UserInterface.displayError("Please enter a starting position value. Decimals are truncated.");
 			return;
 		}
-		if(info.humanCt!=1) {throw new GameErrorException("No starting position should be avaiable for multiplayer.", "Z6146");}
+		if(info.humanCt!=1) {throw new GameException("No starting position should be avaiable for multiplayer.", "Z6146");}
 		int pos = (int)Double.parseDouble(startingPosition.getText());
 		if(pos<0) {UserInterface.displayError("Please do not enter an index smaller than 0 for your starting position."); startingPosition.setText(""); return;}
 		if(pos>=info.playerCt-1) {UserInterface.displayError("Please do not enter an index larger than or equal to the number "
@@ -784,8 +807,8 @@ public class CustomModeFrame extends JFrame implements ActionListener, AI31Const
 		if(box.getSelectedIndex()==0) {return;}
 		int counter = 0;
 		for(String s : removedCardsToString) {if(s.contains(((String)(box.getSelectedItem())).substring(6))) {counter++;}}
-		try {if(counter == sci.availableNums.size()-1) {throw new GameErrorException("Plesae do not attempt to remove the last card of a suit.", "F0319");}}
-		catch(GameErrorException e) {UserInterface.displayException(e, 2);}
+		try {if(counter == sci.availableNums.size()-1) {throw new GameException("Plesae do not attempt to remove the last card of a suit.", "F0319");}}
+		catch(GameException e) {UserInterface.displayException(e, 2);}
 		if(!find(removedCardsToString, (String)(box.getSelectedItem()))){removedCardsToString.add((String)(box.getSelectedItem()));
 		UserInterface.displayInfo("You have removed the card "+((String)(box.getSelectedItem()))+" from the list of available cards.", "Card removal successful.");}
 		else {removedCardsToString.remove((String)(box.getSelectedItem())); UserInterface.displayInfo("You have added back the card "+((String)(box.getSelectedItem()))+
@@ -1199,7 +1222,7 @@ public class CustomModeFrame extends JFrame implements ActionListener, AI31Const
 		c.gridx = 3;
 		String[] availableCardArray = {"Choose a card to remove:"};
 		JLabel infoLab = createLabel("Choose cards to play with:");
-		JComboBox cardBox = createComboBox(availableCardArray);
+		JComboBox<String> cardBox = createComboBox(availableCardArray);
 		cardBox.setToolTipText("<html>Choose cards you don't want to play with. Each time you remove a card (by clicking on it), it will be saved<br>and visible "
 				+ "when you click the 'Check Cards' button."
 				+"\nRemoving a card twice re-adds it back in and so on.</html>");
@@ -1326,14 +1349,6 @@ public class CustomModeFrame extends JFrame implements ActionListener, AI31Const
 		l.setEnabled(false);
 		return l;
 	}
-	private JLabel createSetLabel(String info) {
-		JLabel l = new JLabel(info);
-		l.setEnabled(false);
-		l.setMinimumSize(MIN_LABEL_SIZE);
-		l.setPreferredSize(MIN_LABEL_SIZE);
-		l.setMaximumSize(MIN_LABEL_SIZE);
-		return l;
-	}
 	private JCheckBox createCheckBox(String info) {
 		final JCheckBox box = new JCheckBox(info);
 		box.setEnabled(false);
@@ -1367,8 +1382,8 @@ public class CustomModeFrame extends JFrame implements ActionListener, AI31Const
 		p.setLayout(new FlowLayout());
 		return p;
 	}
-	private JComboBox createComboBox(Object[] info) {
-		JComboBox box = new JComboBox(info);
+	private <T> JComboBox<T> createComboBox(T[] info) {
+		JComboBox<T> box = new JComboBox<T>(info);
 		box.setEnabled(false);
 		box.addActionListener(this);
 		box.setEditable(false);
@@ -1403,7 +1418,7 @@ public class CustomModeFrame extends JFrame implements ActionListener, AI31Const
 		for(int i=0; i<ar.length; i++) {if(ar[i]!=null) {info[i] = ar[i].toString();}else{info[i] = "not a card!";}}
 		return info;
 	}
-	public static ArrayList<String> toStringArrayList(Object[] ar){
+	public static ArrayList toStringArrayList(Object[] ar){
 		ArrayList<String> info = new ArrayList<String>();
 		for(int i=0; i<ar.length; i++) {info.add(ar[i].toString());}
 		return info;

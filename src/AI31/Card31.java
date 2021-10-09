@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import baselineCustomClasses.*;
 
 public class Card31 extends PlayingCard implements Comparable<Card31>{
-	private int removedIndex = -1;
 	/**
 	 * The list of random suits generated.
 	 */
@@ -19,20 +18,28 @@ public class Card31 extends PlayingCard implements Comparable<Card31>{
 	public static final String[] RANDOM_SUIT_STRINGS  = {"Random Spade", "Random Club", "Random Heart", "Random Diamond", "Random Spade or Club",
 			"Random Spade or Heart", "Random Spade or Diamond", "Random Club or Heart", "Random Club or Diamond", "Random Heart or Diamond",
 			"Random not Spade", "Random not Club", "Random not Heart", "Random not Diamond"};
-
 	/**
 	 * Creates a new Card (for the 31 game) with the given number and the hearts suit.
-	 * @param num
+	 * @param num the number of the card
 	 */
 	public Card31(int num){super(num, "hearts");}
 	/**
-	 * 
-	 * @param c
+	 * Creates a new Card for the 31 game with the information in the given playing card.
+	 * @param c the card to create from
 	 */
 	public Card31(PlayingCard c) {super(c);}
+	/**
+	 * Creates a new Card31 with the given number and suit (e.g. 2 of hearts).
+	 * @param num
+	 * @param su
+	 */
 	public Card31(int num, String su){super(num,su);}
+	/**
+	 * 
+	 * @param fa
+	 * @param su
+	 */
 	public Card31(char fa, String su){super(fa, su);}
-	public String toString(){return super.toString();}
 	public boolean equals(Object o){
 		if(o.getClass().getName().equals("AI31.Card31")){
 			if(this == o){return true;}
@@ -48,17 +55,18 @@ public class Card31 extends PlayingCard implements Comparable<Card31>{
 		else{return this.getSuit().compareTo(arg0.getSuit());}
 
 	}
-	public void setRemovedIndex(int ind) {removedIndex = ind;}
-	public int getRemovedIndex() {return removedIndex;}
+
 	public boolean isRandomCard() {
 		if(getSuit().contains("Random ")) {return true;}
 		return false;
 	}
 	/**
-	 * <html>
+	 * 
+	 * This method goes with the custom game.
 	 * DO NOT USE if the card does not have a suit that has the word "random" in it.<br>
 	 * @see AI31.UserInterface#generateSuitCard(int)
 	 * @return a number in correspondence with the guidelines set by the method generateSuitCard(int)
+	 * </html>
 	 */
 	public int randomCardNum() {
 		try {
@@ -68,7 +76,7 @@ public class Card31 extends PlayingCard implements Comparable<Card31>{
 					else if(getSuit().contains("Club")) {return 11;}
 					else if(getSuit().contains("Heart")) {return 12;}
 					else if(getSuit().contains("Diamond")) {return 13;}
-					else {throw new GameErrorException("Please specify a valid suit to not include.", "A9981");}
+					else {throw new GameException("Please specify a valid suit to not include.", "A9981");}
 				}
 				else if(getSuit().contains("Spade")) {
 					if(getSuit().contains("Club")) {
@@ -96,14 +104,21 @@ public class Card31 extends PlayingCard implements Comparable<Card31>{
 					else {return 2;}
 				}
 				else if(getSuit().contains("Diamond")) {return 3;}
-				else {throw new GameErrorException("Please do not specify an invalid suit.", "A3173");}
+				else {throw new GameException("Please do not specify an invalid suit.", "A3173");}
 			}
-			throw new GameErrorException("Please choose a valid card.", "A2274");
+			throw new GameException("Please choose a valid card.", "A2274");
 		}
-		catch(GameErrorException e) {UserInterface.displayException(e, 5); System.exit(0); return -1;}
+		catch(GameException e) {UserInterface.displayException(e, 5); System.exit(0); return -1;}
 	}
+	/**
+	 * Generates a set of cards with the given information.
+	 * @param suitChoice the array of suits 
+	 * @param numChoice
+	 * @param faceChoice
+	 * @param removedCards
+	 * @return
+	 */
 	public static ArrayList<Card31> generateCards(String[] suitChoice, int[] numChoice, char[] faceChoice, Card31[] removedCards){
-		int faceLoc = 0;
 		ArrayList<Card31> cards = new ArrayList<Card31>();
 		for(int i=0; i<numChoice.length; i++) {for(int j=0; j<suitChoice.length; j++) {if(numChoice[i]>10) {break;}cards.add(new Card31(numChoice[i], suitChoice[j]));}}
 		//above is only for numbers
@@ -114,9 +129,9 @@ public class Card31 extends PlayingCard implements Comparable<Card31>{
 	}
 	/**
 	 * PLEASE ENTER ALL suits like a name - UPPERCASE first letter, lowercase other letters
+	 * Generates the strings for the random cards.
 	 * @param suitsToPlayWith - the suits you want to add to generate the random card placeholders
 	 * @return the ArrayList of random card placeholders
-	 * @throws PlayingCardException
 	 */
 	public static ArrayList<String> generateRandomStrings(ArrayList<String> suitsToPlayWith){
 		try {

@@ -2,7 +2,7 @@ package AI31;
 import java.util.ArrayList;
 import java.util.Random;
 import java.util.Collections;
-import baselineCustomClasses.GameErrorException;
+import baselineCustomClasses.GameException;
 import baselineCustomClasses.PlayingCardException;
 public class Machine extends Player {
   //this class defines the AI, giving it a name and such - the below variables have been defined and initialized appropriately
@@ -120,16 +120,16 @@ public class Machine extends Player {
               (getMid().bestCardInSuit(rank[2]));
         }
         else{
-          try{throw new GameErrorException(
+          try{throw new GameException(
               "This can't run if mid has three of a suit - " +
                   "no suit in hand has a match in mid.","H8457");}
-          catch(GameErrorException e){UserInterface.displayException(e, 5); return conditions(-2);}
+          catch(GameException e){UserInterface.displayException(e, 5); return conditions(-2);}
         }
         return increment(nums);
       }
-      throw new GameErrorException("One condition must run.","I9232");
+      throw new GameException("One condition must run.","I9232");
     }
-    catch(GameErrorException e){
+    catch(GameException e){
       UserInterface.displayException(e, 5);
       throw new NullPointerException("Something is missing with the hand");
     }
@@ -177,7 +177,7 @@ public class Machine extends Player {
       return nums;
     }
     catch(PlayingCardException e) {UserInterface.displayException(e, 5); return null;}
-    catch(GameErrorException e) {UserInterface.displayException(e, 5); return null;}
+    catch(GameException e) {UserInterface.displayException(e, 5); return null;}
   }
   private int[] doConditionSixTurn() {
     int[] nums = {0,0};
@@ -217,7 +217,7 @@ public class Machine extends Player {
           nums[1] = getMid().findCard(
               getMid().bestCardInSuit(matchingCards[1].getSuit()));
         }
-        else{throw new GameErrorException("Something went wrong finding a suit of a common number card.","C9842");}
+        else{throw new GameException("Something went wrong finding a suit of a common number card.","C9842");}
       }
       else{
         if(getMid().sumOfHand()>sumOfHand()){return conditions(-2);}
@@ -247,7 +247,7 @@ public class Machine extends Player {
         //2 of a suit - trying to get 2 of a suit and number
         if(getMid().contains(matchingCards[0].getSpecialNumber())>=0){nums[1] = getMid().contains(matchingCards[0].getSpecialNumber());}
         else if(getMid().contains(matchingCards[1].getSpecialNumber())>=0){nums[1] = getMid().contains(matchingCards[1].getSpecialNumber());}
-        else{throw new GameErrorException("Something went wrong here trying to do something I don't know.","I1111");}
+        else{throw new GameException("Something went wrong here trying to do something I don't know.","I1111");}
       }
       else if(getMid().contains(rank[1])>=0 &&
           maxPossibleSum(rank[1], getMid()) > sumOfHand()){
@@ -261,7 +261,7 @@ public class Machine extends Player {
       return increment(nums);
     }
     catch(PlayingCardException e) {UserInterface.displayException(e, 5);}
-    catch(GameErrorException e) {UserInterface.displayException(e, 5);}
+    catch(GameException e) {UserInterface.displayException(e, 5);}
     return null;
   }
   public Card31 attemptToFindCard(int num, int i){//knowing the highest suit, it tries to find a card in the middle with the number num	
@@ -274,7 +274,7 @@ public class Machine extends Player {
       if(loc!=-1){return new Card31(getCardInMiddle(loc));}
       return null;
     }
-    catch(GameErrorException e){UserInterface.displayException(e, 5); return null;}
+    catch(GameException e){UserInterface.displayException(e, 5); return null;}
   }
   public String toString(){
     String s = getName()+": My cards are: ";
@@ -368,7 +368,7 @@ public class Machine extends Player {
     else{return 1;}
   }
   private Card31 getCardInMiddle(int index){return new Card31(getMid().getCard(index));}
-  public boolean equalTens() throws GameErrorException{
+  public boolean equalTens() throws GameException{
     if(twoTensLocations()!=null){
       boolean[] list = twoTensLocations();
       char[] faces = new char[list.length];
@@ -389,16 +389,16 @@ public class Machine extends Player {
       else{return false;}
 
     }
-    throw new GameErrorException("equalTens() only works with two equal tens, no more and no less.","D5645");
+    throw new GameException("equalTens() only works with two equal tens, no more and no less.","D5645");
   }
-  public double middleHandSum() throws GameErrorException{return getMid().sumOfHand();}
+  public double middleHandSum() throws GameException{return getMid().sumOfHand();}
   /* Preconditions: num is -1 or -2
    * Postconditions: returns an int array size 2 with num in both slots
    */ 
-  private int[] conditions(int num) throws GameErrorException{
+  private int[] conditions(int num) throws GameException{
     int[] nums = new int[2];
     if(num==-1){nums[0] = -1; nums[1] = -1;} else if(num==-2){nums[0] = -2; nums[1] = -2;}
-    else{throw new GameErrorException("The precondtions of this function have not been met.","H3187");}return nums;}
+    else{throw new GameException("The precondtions of this function have not been met.","H3187");}return nums;}
   private int[] increment(int[] original){for(int i=0; i<original.length; i++){original[i]++;}return original;}
 
   //make the AIs not want to create a good hand in the mid unless needed

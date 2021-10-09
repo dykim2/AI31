@@ -1,5 +1,6 @@
 package AI31;
-import java.awt.*;
+import java.awt.Dimension;
+import java.awt.Insets;
 import baselineCustomClasses.PlayingCard;
 /**
  * <html>

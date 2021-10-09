@@ -1,7 +1,7 @@
 package AI31;
 import java.util.ArrayList;
 import java.util.Collections;
-import baselineCustomClasses.GameErrorException;
+import baselineCustomClasses.GameException;
 import baselineCustomClasses.PlayingCard;
 import baselineCustomClasses.PlayingCardException;
 public abstract class Player implements AI31Constants{
@@ -117,8 +117,18 @@ public abstract class Player implements AI31Constants{
    * @return
    */
   public boolean isStarting(){return startingPlayer;}
+  /**
+   * Is the player alive?
+   * @return true of they have more than zero lives, false otherwise 
+   */
   public boolean isAlive() {return lives>0;}
-  public void addCard(Card31 card){if(hand.size()>=3) {return;}hand.add(card);}
+  /**
+   * 
+   * @param card
+   * @throws GameException if an attempt to add a fourth card is made
+   */
+  public void addCard(Card31 card) throws GameException{if(hand.size()>=3) 
+  {throw new GameException("Do not add a card to a full hand.", "J1103");}hand.add(card);}
   public void addCardAtSlot(Card31 card, int slot){hand.add(slot, card);}
   public void addHand(ArrayList<Card31> ha){hand = null; hand = new ArrayList<Card31>(ha);}
   public void removeCard(Card31 card){hand.remove(card);}
@@ -128,11 +138,11 @@ public abstract class Player implements AI31Constants{
   public void removeLife(){lives--;}
   public boolean setStarting(boolean start) {
     try {
-      if(!isAlive()) {throw new GameErrorException("Please do not attempt to set the staring status of a dead player.", "Y9546");}
+      if(!isAlive()) {throw new GameException("Please do not attempt to set the staring status of a dead player.", "Y9546");}
       startingPlayer = start;
       return true;
     }
-    catch(GameErrorException e) {UserInterface.displayException(e, 3); return false;}
+    catch(GameException e) {UserInterface.displayException(e, 3); return false;}
   }
   /**
    * @deprecated As of v4.0, this method is no longer in use due to the alive field not being used.
@@ -144,16 +154,46 @@ public abstract class Player implements AI31Constants{
    *
    */
   class CardSum implements Comparable<CardSum>{
+    /**
+     * The suit to calculate the score for.
+     */
     private String suitChoice;
+    /**
+     * The sum in the given suit.
+     */
     private int suitSum;
+    /**
+     * Creates a new sum of cards for this player.
+     * @param n the current sum of the player
+     * @param s the suit of choice to calculate score
+     */
     CardSum(int n, String s){
       suitChoice = new String(s);
       suitSum = n;
     }
-    int getSuitSum(){return suitSum;}
-    String getSuitChoice(){return suitChoice;}
-    void setSuitSum(int sum){suitSum = sum;}
-    void setSuitChoice(String choice){suitChoice = new String(choice);}
+    /**
+     * Gets the sum of the suit.
+     * @return the total amount of points the suit has
+     */
+    protected int getSuitSum(){return suitSum;}
+    /**
+     * Gets the choice of suit.
+     * @return the suit chosen to score
+     */
+    protected String getSuitChoice(){return suitChoice;}
+    /**
+     * 
+     * @param sum
+     */
+    protected void setSuitSum(int sum){suitSum = sum;}
+    /**
+     * 
+     * @param choice
+     */
+    protected void setSuitChoice(String choice){suitChoice = new String(choice);}
+    /**
+     * 
+     */
     @Override
     public int compareTo(CardSum arg0){return this.suitSum-arg0.suitSum;}
   }
@@ -168,7 +208,7 @@ public abstract class Player implements AI31Constants{
     if(hand.get(0).getSuit().equalsIgnoreCase(hand.get(2).getSuit())){return 2;}
     return 0;
   }
-  public String highestSuit() throws GameErrorException{
+  public String highestSuit() throws GameException{
     int highSum = -50;
     String highSuit = "";
     for(String s : SUITS){
@@ -197,13 +237,13 @@ public abstract class Player implements AI31Constants{
   /**
    * This method, only used when a player has three of the same number, calculates the sum.
    * @return the score provided by the triple numbers
-   * @throws GameErrorException - if the preconditions aren't met (there must be three of a number and not one of the three of a number can be an ace).
+   * @throws GameException - if the preconditions aren't met (there must be three of a number and not one of the three of a number can be an ace).
    * If even one card's number is an ace, all three will for the first condition (3 identical numbers) to be met.
    */
-  public double tripleNumber() throws GameErrorException {
+  public double tripleNumber() throws GameException {
     try {
-      if(matchingNumber()!=3) {throw new GameErrorException("Please do not attempt to use this method without 3 of a number.", "E1206");} 
-      else if(matchingNumber() == 3 && getCard(1).getFace() == 'A') {throw new GameErrorException("Please do not attempt to use this method with 3 aces.", "E1985");}
+      if(matchingNumber()!=3) {throw new GameException("Please do not attempt to use this method without 3 of a number.", "E1206");} 
+      else if(matchingNumber() == 3 && getCard(1).getFace() == 'A') {throw new GameException("Please do not attempt to use this method with 3 aces.", "E1985");}
       //will be worth 1 king and 2 queens
       if(!PlayingCard.getValueConditions(0)) {return 3*PlayingCard.getJackValue();}
       else {return (PlayingCard.getJackValue()+1)*2+(PlayingCard.getJackValue()+2);}
@@ -229,7 +269,7 @@ public abstract class Player implements AI31Constants{
   /**
    * Determines and returns the sum of the player's hand.
    * @return the sum of the player's hand
-   * @throws GameErrorException 
+   * @throws GameException 
    * @see {@link AI31.Player#highestValue()}
    */
   public double sumOfHand() {
@@ -271,7 +311,7 @@ public abstract class Player implements AI31Constants{
   /**
    * Checks the cards array for a specific card and returns the index of the card in the array
    * @param c the card to compare with
-   * @return
+   * @return an integer that 
    */
   public int findCard(Card31 c){
     for(int i=0; i<hand.size(); i++){if(getCard(i).equals(c)){return i;}}
@@ -316,7 +356,7 @@ public abstract class Player implements AI31Constants{
 
     return lowCard;
   }
-  public Card31 smallestCard() throws GameErrorException{
+  public Card31 smallestCard() throws GameException{
     //by number
     try{
       int low = 100;
@@ -326,10 +366,10 @@ public abstract class Player implements AI31Constants{
     }
     catch(IndexOutOfBoundsException e){
       UserInterface.displayException(e, 3);
-      throw new GameErrorException("Something went wrong trying to find the lowest card - seems like there is no lowest card", "Y5340");
+      throw new GameException("Something went wrong trying to find the lowest card - seems like there is no lowest card", "Y5340");
     }
   }
-  public Card31 unidenticalSuitCard() throws GameErrorException{//only to use if matchingSuit() == 2
+  public Card31 unidenticalSuitCard() throws GameException{//only to use if matchingSuit() == 2
     if(matchingSuit() == 2){//otherwise this won't work
       try{
         String high = highestSuit();
@@ -338,24 +378,24 @@ public abstract class Player implements AI31Constants{
             return hand.get(i);
           }
         }
-        throw new GameErrorException("A card must be found.", "I0800");
+        throw new GameException("A card must be found.", "I0800");
       }
-      catch(GameErrorException e){
+      catch(GameException e){
         UserInterface.displayException(e, 3);
         throw new NullPointerException("Something is missing with the unidentical suit card");
       }
     }
     else{
-      throw new GameErrorException("unidenticalSuitCard() only works when the max number of cards in a suit is 2 (out of 3).", "V1567");
+      throw new GameException("unidenticalSuitCard() only works when the max number of cards in a suit is 2 (out of 3).", "V1567");
     }
   }
-  public Card31 unidenticalNumberCard() throws GameErrorException{
+  public Card31 unidenticalNumberCard() throws GameException{
     if(matchingNumber()==2){
       if(getCard(0).getSpecialNumber() == getCard(1).getSpecialNumber()){return getCard(2);}
       else if(getCard(0).getSpecialNumber() == getCard(2).getSpecialNumber()){return getCard(1);}
       else{return getCard(0);}
     }
-    else{throw new GameErrorException("unidenticalNumberCard() only works when the max # of common number cards is 2 (out of 3).","V1893");}
+    else{throw new GameException("unidenticalNumberCard() only works when the max # of common number cards is 2 (out of 3).","V1893");}
   }
   public Card31 worstCardLimiter(int num, char f, String suit1){
     if(num==0 && suit1.equalsIgnoreCase("") && f==' '){UserInterface.displayError("Why use this function if you're not going to enter values?");return null;}
@@ -425,7 +465,7 @@ public abstract class Player implements AI31Constants{
       return list;
     }
   }
-  public double maxPossibleSum(MiddleHand m) throws GameErrorException{
+  public double maxPossibleSum(MiddleHand m) throws GameException{
     String[] rank = suitRank();
     ArrayList<String> ranks = new ArrayList<String>();
     for(String r : rank){ranks.add(r);}
@@ -467,7 +507,7 @@ public abstract class Player implements AI31Constants{
     Collections.reverse(sums);
     return sums.get(0);
   }
-  public double maxPossibleCustomSum(MiddleHand m) throws GameErrorException, PlayingCardException{
+  public double maxPossibleCustomSum(MiddleHand m) throws GameException, PlayingCardException{
     String[] rank = suitRank();
     ArrayList<String> ranks = new ArrayList<String>();
     for(String r : rank){ranks.add(r);}
@@ -525,16 +565,16 @@ public abstract class Player implements AI31Constants{
     }
     else{return suitSum(suit);}
   }
-  public int commonNumber() throws GameErrorException{return getCard(commonSpecialNumberIndex()).getNumber();}
-  public int commonSpecialNumber() throws GameErrorException{
+  public int commonNumber() throws GameException{return getCard(commonSpecialNumberIndex()).getNumber();}
+  public int commonSpecialNumber() throws GameException{
     return getCard(commonSpecialNumberIndex()).getSpecialNumber();}
   //should only be used with 10s or lls, again only works with two of a kinds
-  public char commonFace() throws GameErrorException{return getCard(commonSpecialNumberIndex()).getFace();}
-  public int commonSpecialNumberIndex() throws GameErrorException{
+  public char commonFace() throws GameException{return getCard(commonSpecialNumberIndex()).getFace();}
+  public int commonSpecialNumberIndex() throws GameException{
     if(getCard(0).getSpecialNumber() == getCard(1).getSpecialNumber()){return 0;}
     else if(getCard(0).getSpecialNumber() == getCard(2).getSpecialNumber()){return 2;}
     else if(getCard(1).getSpecialNumber() == getCard(2).getSpecialNumber()){return 1;}
-    else{throw new GameErrorException("Something went wrong finding the common special number index.", "G6666");}
+    else{throw new GameException("Something went wrong finding the common special number index.", "G6666");}
   }
   //goal of function: move two cards around
   public void moveCardsAround(int loc0, int loc1) {
