@@ -2,7 +2,11 @@ package AI31;
 import java.util.ArrayList;
 
 import baselineCustomClasses.*;
-
+/**
+ * The playing cards of the 31 game. These are used for everything!
+ * @author Dong-Yon Kim
+ *
+ */
 public class Card31 extends PlayingCard implements Comparable<Card31>{
 	/**
 	 * The list of random suits generated.
@@ -30,14 +34,14 @@ public class Card31 extends PlayingCard implements Comparable<Card31>{
 	public Card31(PlayingCard c) {super(c);}
 	/**
 	 * Creates a new Card31 with the given number and suit (e.g. 2 of hearts).
-	 * @param num
-	 * @param su
+	 * @param num the number of the card
+	 * @param su the suit of the card
 	 */
 	public Card31(int num, String su){super(num,su);}
 	/**
-	 * 
-	 * @param fa
-	 * @param su
+	 * Creates a new Card31 with the given face and suit (e.g. K of clubs).
+	 * @param fa the face of the card
+	 * @param su the suit of the card
 	 */
 	public Card31(char fa, String su){super(fa, su);}
 	public boolean equals(Object o){
@@ -55,7 +59,10 @@ public class Card31 extends PlayingCard implements Comparable<Card31>{
 		else{return this.getSuit().compareTo(arg0.getSuit());}
 
 	}
-
+	/**
+	 * Checks whether this card is a random card or not.
+	 * @return true if it is a random card, false otherwise
+	 */
 	public boolean isRandomCard() {
 		if(getSuit().contains("Random ")) {return true;}
 		return false;
@@ -63,10 +70,9 @@ public class Card31 extends PlayingCard implements Comparable<Card31>{
 	/**
 	 * 
 	 * This method goes with the custom game.
-	 * DO NOT USE if the card does not have a suit that has the word "random" in it.<br>
+	 * DO NOT USE if the card does not have a suit that has the word "random" in it.
 	 * @see AI31.UserInterface#generateSuitCard(int)
 	 * @return a number in correspondence with the guidelines set by the method generateSuitCard(int)
-	 * </html>
 	 */
 	public int randomCardNum() {
 		try {
@@ -113,10 +119,10 @@ public class Card31 extends PlayingCard implements Comparable<Card31>{
 	/**
 	 * Generates a set of cards with the given information.
 	 * @param suitChoice the array of suits 
-	 * @param numChoice
-	 * @param faceChoice
-	 * @param removedCards
-	 * @return
+	 * @param numChoice the array of numbers
+	 * @param faceChoice the array of faces
+	 * @param removedCards the array of cards to remove
+	 * @return an array list with all possible cards from the given parameters
 	 */
 	public static ArrayList<Card31> generateCards(String[] suitChoice, int[] numChoice, char[] faceChoice, Card31[] removedCards){
 		ArrayList<Card31> cards = new ArrayList<Card31>();

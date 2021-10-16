@@ -21,17 +21,22 @@ import baselineCustomClasses.PlayingCardException;
  * <html> This class is the class that runs all of the game information between players and components. <br>
  * Made by Dong-Yon Kim. Please do NOT claim or publish this without my written permission. <br>
  * Do you want written permission? Email me: dongyonkim5@gmail.com. <br>
- * Enjoy and use this for personal reasons as much as you want! Just don't publish it please. Any questions? Email them to me and I'll take a look.
- * Make sure to have fun... <br>
+ * Enjoy and use this for personal reasons as much as you want! Just don't publish it please. Any questions? Email them to me
+ * and I'll take a look. Make sure to have fun...! <br>
  * <br>
- * NOTE: All Javadoc information is given for global variables and methods. No Javadoc information for local variables. Future long term goal:
- * Overhaul the UI and make it look a lot nicer, with a background and cards in different locations. The above would work with up to 6 players and at
- * a minimum of 2. A possible animation would be drag the card over. But how would I do that? I could though drag my card with the middle card and
- * have that replace the two.
+ * NOTE: All Javadoc information is given for global variables and methods. No Javadoc information for local variables.
+ * Future long term goal: Overhaul the UI and make it look a lot nicer, with a background and cards in different locations.
+ * The above would work with up to 6 players and at a minimum of 2. A possible animation would be drag the card over. But how
+ * would I do that? I could though drag my card with the middle card and have that replace the two. I would have to redesign
+ * the panels, so that the entire thing is under one layered panel. <br>
+ * Version 10.4 and onwards will start implementing the drag
+ * and drop while showing the middle hand in the center.<br> I could structure it this way: I have a layered panel and a general
+ * panel. Depending on the number of players, I set up the game accordingly, with a maximum of 8 players and the middle hand.
  * 
+ * Also, I want to remove the entire bottom panel. I could use this panel for other stuff, but for now I just want it gone.
  * @author dykim
  * @since 1.1
- * @version 10.1 </html>
+ * @version 10.4 </html>
  */
 public class UserInterface extends JFrame implements AI31Constants {
 	/**
@@ -67,8 +72,8 @@ public class UserInterface extends JFrame implements AI31Constants {
 	 */
 	private ArrayList<String> playerNames = new ArrayList<String>();// the names of the AIs
 	/**
-	 * Who's turn it is. If you are playing a default game, 0 is the first computer, 1 is the second, and so on. The middle hand does not do a turn -
-	 * it needs a hand.
+	 * Who's turn it is. If you are playing a default game, 0 is the first computer, 1 is the second, and so on. The middle
+	 * hand does not do a turn - it needs a hand.
 	 */
 	private int playerTurn;// 0 is the first computer, 1 is the second, and so on (starts at 0)
 	// After every computer, you are the next player, and then the middle hand does nothing.
@@ -86,7 +91,8 @@ public class UserInterface extends JFrame implements AI31Constants {
 	 */
 	private int roundCount = 1;
 	/**
-	 * How many players are not dead (how many players have at least one life)? Used to determine standing (1st, 3rd, 7th, etc. place).
+	 * How many players are not dead (how many players have at least one life)? Used to determine standing (1st, 3rd, 7th,
+	 * etc. place).
 	 */
 	private int alivePlayerCount;
 	/**
@@ -126,9 +132,10 @@ public class UserInterface extends JFrame implements AI31Constants {
 	 */
 	private int startingPlayer;
 	/*
-	 * "friendly" means any number of people can play at the same computer with a set number of AI's (0 for friendly, a specifed number for
-	 * combination - just make sure they don't look at each other's hand - the AIs will play first, then the players will play at the end - the last
-	 * player will start the game the GameErrorException class is the error that is thrown when something is not right
+	 * "friendly" means any number of people can play at the same computer with a set number of AI's (0 for friendly, a
+	 * specifed number for combination - just make sure they don't look at each other's hand - the AIs will play first, then
+	 * the players will play at the end - the last player will start the game the GameErrorException class is the error that
+	 * is thrown when something is not right
 	 */
 	/**
 	 * The game timer - deals with repeating actions. This timer keeps running for multiple times when needed.
@@ -156,8 +163,8 @@ public class UserInterface extends JFrame implements AI31Constants {
 	 */
 	protected boolean startingPlayerSet = false;
 	/**
-	 * Whether this game is a default game or not. Basically, a default game takes you straight in - randomizes AI name and player name What
-	 * determines a default game? When the number of times buttons have been pressed is exactly ONE
+	 * Whether this game is a default game or not. Basically, a default game takes you straight in - randomizes AI name and
+	 * player name What determines a default game? When the number of times buttons have been pressed is exactly ONE
 	 */
 	protected boolean defaultGame = false;
 	/**
@@ -169,10 +176,8 @@ public class UserInterface extends JFrame implements AI31Constants {
 	/**
 	 * Creates the game. It's that simple.
 	 * 
-	 * @throws PlayingCardException
-	 *             if something goes wrong setting up the playing cards
-	 * @throws GameException
-	 *             if something goes wrong while playing the game
+	 * @throws PlayingCardException if something goes wrong setting up the playing cards
+	 * @throws GameException if something goes wrong while playing the game
 	 */
 	public UserInterface() throws PlayingCardException, GameException {
 		// setting up the ArrayLists
@@ -183,8 +188,7 @@ public class UserInterface extends JFrame implements AI31Constants {
 	 * An old constructor for UserInterface, primarily for testing purposes. DO NOT USE.
 	 * 
 	 * @deprecated
-	 * @param info
-	 *            - this boolean means absolutely nothing at all
+	 * @param info - this boolean means absolutely nothing at all
 	 */
 	public UserInterface(boolean info) {
 		setUpInformation();
@@ -212,7 +216,8 @@ public class UserInterface extends JFrame implements AI31Constants {
 				} catch (NumberFormatException n) {
 					displayException(n, 0);
 				}
-				if (num > 9 && num < 14) { minimumCardNumber -= (num - 9); } // 10 players - 6 and above, 12 - 4 and above, 13 - 3 and above (no more)
+				if (num > 9 && num < 14) { minimumCardNumber -= (num - 9); } // 10 players - 6 and above, 12 - 4 and above,
+																				// 13 - 3 and above (no more)
 				if (num <= 4) { minimumCardNumber = 8; }
 			}
 			return num;
@@ -224,10 +229,8 @@ public class UserInterface extends JFrame implements AI31Constants {
 	/**
 	 * Displays the question in a pop up dialog.
 	 * 
-	 * @param body
-	 *            - the Object the user want to ask as a JOptionPane
-	 * @param title
-	 *            - the title of the question
+	 * @param body - the Object the user want to ask as a JOptionPane
+	 * @param title - the title of the question
 	 * @return the result of the question
 	 */
 	public static String displayQuestion(Object body, String title) {
@@ -242,10 +245,8 @@ public class UserInterface extends JFrame implements AI31Constants {
 	/**
 	 * Displays the question in a pop up dialog and ignores all cases of null instances.
 	 * 
-	 * @param body
-	 *            - the Object the user want to ask as a JOptionPane
-	 * @param title
-	 *            - the title of the question
+	 * @param body - the Object the user want to ask as a JOptionPane
+	 * @param title - the title of the question
 	 * @return the result of the question
 	 */
 	public static String displayQuestionIgnoreNull(Object body, String title) {
@@ -254,19 +255,15 @@ public class UserInterface extends JFrame implements AI31Constants {
 	/**
 	 * Displays the information in a pop up dialog with the title as "Information".
 	 * 
-	 * @param body
-	 *            - the Object the user wants to display as a JOptionPane
-	 * @param title
-	 *            - the title of the message
+	 * @param body - the Object the user wants to display as a JOptionPane
+	 * @param title - the title of the message
 	 */
 	public static void displayInfo(Object body) { displayInfo(body, "Information!"); }
 	/**
 	 * Displays the information in a pop up dialog.
 	 * 
-	 * @param body
-	 *            - the Object the user wants to display as a JOptionPane
-	 * @param title
-	 *            - the title of the message
+	 * @param body - the Object the user wants to display as a JOptionPane
+	 * @param title - the title of the message
 	 */
 	public static void displayInfo(Object body, String title) {
 		JOptionPane.showMessageDialog(null, body, title, JOptionPane.INFORMATION_MESSAGE);
@@ -274,10 +271,8 @@ public class UserInterface extends JFrame implements AI31Constants {
 	/**
 	 * Displays the warning in a pop up dialog.
 	 * 
-	 * @param body
-	 *            - the Object the user wants to warn as a JOptionPane
-	 * @param title
-	 *            - the title of the message
+	 * @param body - the Object the user wants to warn as a JOptionPane
+	 * @param title - the title of the message
 	 */
 	public static void displayWarning(Object body, String title) {
 		JOptionPane.showMessageDialog(null, body, title, JOptionPane.WARNING_MESSAGE);
@@ -285,17 +280,17 @@ public class UserInterface extends JFrame implements AI31Constants {
 	/**
 	 * Displays the error in a pop up dialog with the title "ERROR!".
 	 * 
-	 * @param body
-	 *            - the Object the user wants to display an error for as a JOptionPane
+	 * @param body - the Object the user wants to display an error for as a JOptionPane
 	 */
-	public static void displayError(Object body) { JOptionPane.showMessageDialog(null, body, "ERROR!", JOptionPane.ERROR_MESSAGE); }
+	public static void displayError(Object body) {
+		JOptionPane.showMessageDialog(null, body, "ERROR!", JOptionPane.ERROR_MESSAGE);
+	}
 	/**
-	 * <html> Displays an exception and what you normally would see in the console as a result of said exception in dialog boxes.
+	 * <html> Displays an exception and what you normally would see in the console as a result of said exception in dialog
+	 * boxes.
 	 * 
-	 * @param e
-	 *            - the Exception you want to display
-	 * @param location
-	 *            - where the Exception occured (which class?) <br>
+	 * @param e the Exception you want to display
+	 * @param location - where the Exception occured (which class?) <br>
 	 *            0: UserInterface<br>
 	 *            1: UserPanel<br>
 	 *            2: CustomFrame<br>
@@ -306,8 +301,9 @@ public class UserInterface extends JFrame implements AI31Constants {
 	 */
 	public static void displayException(Exception e, int location) {
 		/*
-		 * This function uses a StringWriter to obtain the information from the Exception's printStackTrace() method and a PrintWriter to ensure
-		 * compatibility for the method. Then it displays the information in three dialog boxes and prints the actual stack trace..
+		 * This function uses a StringWriter to obtain the information from the Exception's printStackTrace() method and a
+		 * PrintWriter to ensure compatibility for the method. Then it displays the information in three dialog boxes and
+		 * prints the actual stack trace..
 		 */
 		try {
 			StringWriter s = new StringWriter();
@@ -345,46 +341,44 @@ public class UserInterface extends JFrame implements AI31Constants {
 	/**
 	 * Displays the Object in a pop up dialog and asks for specific information, based on the selection array.
 	 * 
-	 * @param body
-	 *            - the Object the user wants to display as a JOptionPane
-	 * @param selection
-	 *            - the option choices for the buttons of the JOptionPane
-	 * @param title
-	 *            - the title of the message
+	 * @param body - the Object the user wants to display as a JOptionPane
+	 * @param selection - the option choices for the buttons of the JOptionPane
+	 * @param title - the title of the message
 	 * @return an integer representing the chosen option from the array
 	 */
 	public static int displayOptions(Object body, Object[] selection, String title) {
-		return JOptionPane.showOptionDialog(null, body, title, JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null, selection, null);
+		return JOptionPane.showOptionDialog(null, body, title, JOptionPane.YES_NO_CANCEL_OPTION,
+				JOptionPane.QUESTION_MESSAGE, null, selection, null);
 	}
 	/**
 	 * Displays the Object in a pop up dialog and asks for specific information.
 	 * 
-	 * @param body
-	 *            - the Object the user wants to display as a JOptionPane
-	 * @param title
-	 *            - the title of the message
+	 * @param body - the Object the user wants to display as a JOptionPane
+	 * @param title - the title of the message
 	 * @return an integer representing the chosen button (2 for cancel, 0 for yes, 1 for no)
 	 */
 	public static int displayOptions(Object body, String title) {
-		return JOptionPane.showOptionDialog(null, body, title, JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null, null, null);
+		return JOptionPane.showOptionDialog(null, body, title, JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE,
+				null, null, null);
 	}
 	/**
 	 * <html>
 	 * 
-	 * @see AI31.UserInterface#displayOptions(Object, String) Note that the conditions and return values are exactly the same as: <br>
+	 * @see AI31.UserInterface#displayOptions(Object, String) Note that the conditions and return values are exactly the same
+	 *      as: <br>
 	 *      AI31.UserInterface#displayOptions(Object, String).<br>
 	 *      The only difference: This function's buttons are titled YES, NO, and CANCEL, not OK and CANCEL. </html>
 	 */
 	public static int displayYesNo(Object body, String title) {
-		return JOptionPane.showOptionDialog(null, body, title, JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, null, null);
+		return JOptionPane.showOptionDialog(null, body, title, JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null,
+				null, null);
 	}
 	/* ^^^^^^^^^^ Using JOptionPanes ^^^^^^^^^^ */
 	/* VVVVVVV Creating and setting up the game VVVVVVV */
 	/**
 	 * Sets up the visible UI components to use for playing the game.
 	 * 
-	 * @throws GUISetUpException
-	 *             - if something goes wrong while setting up the game
+	 * @throws GUISetUpException - if something goes wrong while setting up the game
 	 * 
 	 */
 	protected void setUpGUI() {
@@ -426,11 +420,8 @@ public class UserInterface extends JFrame implements AI31Constants {
 		}
 	}
 	/**
-	 * This function adds the names of the AIs for the game to reference. The player can decide what the names will be, or can let the game decide.
-	 * 
-	 * @param: None
-	 * @author Dong-Yon
-	 * 
+	 * This function adds the names of the AIs for the game to reference. The player can decide what the names will be, or
+	 * can let the game decide.
 	 */
 	protected void startGame() {
 		boolean errorFound = false;
@@ -469,7 +460,8 @@ public class UserInterface extends JFrame implements AI31Constants {
 					while (names.size() < playerCount - 1) {
 						String name;
 						do {
-							name = displayQuestionIgnoreNull("Enter the name of an AI or" + " enter -1 to quit adding AI names.",
+							name = displayQuestionIgnoreNull(
+									"Enter the name of an AI or" + " enter -1 to quit adding AI names.",
 									"Choose an AI name!");
 							if (name == null || name.equals("") || name.equals("-1")) {
 								break;
@@ -488,7 +480,10 @@ public class UserInterface extends JFrame implements AI31Constants {
 						}
 					}
 					for (int i = names.size(); i < playerCount
-							- humanCount; i++) {/* player count minus one is the human, names.size() is the last name not added */
+							- humanCount; i++) {/*
+												 * player count minus one is the human, names.size() is the last name not
+												 * added
+												 */
 						players.add(new Machine(i, this, generateName()));
 					}
 				} else {
@@ -498,8 +493,10 @@ public class UserInterface extends JFrame implements AI31Constants {
 				for (int i = 0; i < playerCount - 1; i++) { players.add(new Machine(i, this, names.get(i))); }
 			}
 
-			displayInfo("31 is a game of swapping cards to gain the highest value in cards." + "\nYou will be facing " + (playerCount - 1)
-					+ " highly skilled AI(s)!" + "\nSee the rules on the left for how to play.", "Welcome to 31!");
+			displayInfo(
+					"31 is a game of swapping cards to gain the highest value in cards." + "\nYou will be facing "
+							+ (playerCount - 1) + " highly skilled AI(s)!" + "\nSee the rules on the left for how to play.",
+					"Welcome to 31!");
 			int d = displayYesNo(
 					"Click 'Yes' to make your player an AI and 'No' to play as a human\n"
 							+ "(good for those players new to the game or those who like spectator sports).",
@@ -547,8 +544,10 @@ public class UserInterface extends JFrame implements AI31Constants {
 				for (int i = 0; i < playerCount; i++) {
 					String name;
 					do {
-						name = displayQuestionIgnoreNull("Please enter the name of a human player or -1 to randomize this human name\n"
-								+ "Note that leaving the field blank is equivalent to entering -1.", "Human names needed!");
+						name = displayQuestionIgnoreNull(
+								"Please enter the name of a human player or -1 to randomize this human name\n"
+										+ "Note that leaving the field blank is equivalent to entering -1.",
+								"Human names needed!");
 						if (name != null && !name.equals("") && !name.equals("-1")) {
 							if (checkName(name)) {
 								humanPlayerNames.add(name);
@@ -558,7 +557,8 @@ public class UserInterface extends JFrame implements AI31Constants {
 							}
 						} else {
 							humanPlayerNames.add(generateName());
-							panel.addText("Human Player #" + i + ": " + humanPlayerNames.get(humanPlayerNames.size() - 1) + "\n");
+							panel.addText(
+									"Human Player #" + i + ": " + humanPlayerNames.get(humanPlayerNames.size() - 1) + "\n");
 						}
 					} while (!checkName(name));
 				}
@@ -567,8 +567,10 @@ public class UserInterface extends JFrame implements AI31Constants {
 				for (int i = 0; i < humanCount; i++) {
 					String name;
 					do {
-						name = displayQuestionIgnoreNull("Please enter the name of a human player or -1 to randomize this human name\n"
-								+ "Note that leaving the field blank is equivalent to entering -1.", "Human names needed!");
+						name = displayQuestionIgnoreNull(
+								"Please enter the name of a human player or -1 to randomize this human name\n"
+										+ "Note that leaving the field blank is equivalent to entering -1.",
+								"Human names needed!");
 						if (name != null && !name.equals("") && !name.equals("-1")) {
 							if (checkName(name)) {
 								humanPlayerNames.add(name);
@@ -578,7 +580,8 @@ public class UserInterface extends JFrame implements AI31Constants {
 							}
 						} else {
 							humanPlayerNames.add(generateName());
-							panel.addText("Human Player #" + i + ": " + humanPlayerNames.get(humanPlayerNames.size() - 1) + "\n");
+							panel.addText(
+									"Human Player #" + i + ": " + humanPlayerNames.get(humanPlayerNames.size() - 1) + "\n");
 						}
 					} while (!checkName(name));
 				}
@@ -588,7 +591,8 @@ public class UserInterface extends JFrame implements AI31Constants {
 					while (names.size() < playerCount - humanCount) {
 						String name;
 						do {
-							name = displayQuestionIgnoreNull("Enter the name of an AI or" + " enter -1 to quit adding AI names.",
+							name = displayQuestionIgnoreNull(
+									"Enter the name of an AI or" + " enter -1 to quit adding AI names.",
 									"Choose an AI name!");
 							if (name == null || name.equals("") || name.equals("-1")) {
 								break;
@@ -608,7 +612,10 @@ public class UserInterface extends JFrame implements AI31Constants {
 					}
 					/* for(int i=0; i<names.size(); i++) {players.add(new Machine(i, this, names.get(i)));} */
 					for (int i = names.size(); i < playerCount
-							- humanCount; i++) {/* player count minus one is the human, names.size() is the last name not added */
+							- humanCount; i++) {/*
+												 * player count minus one is the human, names.size() is the last name not
+												 * added
+												 */
 						players.add(new Machine(i, this, generateName()));
 					}
 					for (int i = 0; i < humanCount; i++) { players.add(new Human(humanPlayerNames.get(i), this)); }
@@ -627,12 +634,14 @@ public class UserInterface extends JFrame implements AI31Constants {
 			players.add(new MiddleHand(this));
 			panel.addText("31 is a game of swapping cards to gain the highest value in cards.\n");
 			if (gameMode.equalsIgnoreCase("combination")) {
-				panel.addText("You will be facing " + (playerCount - humanCount) + " highly skilled AI(s) " + "and " + (humanCount - 1)
-						+ " human player(s)!\n");
+				panel.addText("You will be facing " + (playerCount - humanCount) + " highly skilled AI(s) " + "and "
+						+ (humanCount - 1) + " human player(s)!\n");
 			} else {
 				panel.addText("You will be facing " + (humanCount - 1) + " human player(s)!\n");
-				displayInfo("31 is a game of swapping cards to gain the highest value in cards. " + "\nYou will be facing " + (humanCount - 1)
-						+ " human player(s)!\nSee the rules on the left for how to play.", "Welcome to 31!");
+				displayInfo(
+						"31 is a game of swapping cards to gain the highest value in cards. " + "\nYou will be facing "
+								+ (humanCount - 1) + " human player(s)!\nSee the rules on the left for how to play.",
+						"Welcome to 31!");
 			}
 			dealCards();
 			allPlayers.addAll(players);
@@ -644,6 +653,7 @@ public class UserInterface extends JFrame implements AI31Constants {
 			displayException(e, 0);
 		}
 	}
+	
 	/**
 	 * Creates the CustomModeFrame to obtain information on how to set the game up (special settings?).
 	 */
@@ -758,14 +768,18 @@ public class UserInterface extends JFrame implements AI31Constants {
 					} while (!checkName(name));
 				}
 				for (int i = 0; i < playerCount - 1; i++) { players.add(new Human(humanPlayerNames.get(i), this)); }
-				displayInfo("31 is a game of swapping cards to gain the highest value in cards." + "\nYou will be facing " + (humanCount - 1)
-						+ " human player(s)!" + "\nSee the rules on the left for how to play.", "Welcome to 31!");
+				displayInfo(
+						"31 is a game of swapping cards to gain the highest value in cards." + "\nYou will be facing "
+								+ (humanCount - 1) + " human player(s)!" + "\nSee the rules on the left for how to play.",
+						"Welcome to 31!");
 				if (!startingPlayerSet) { startingPlayer = playerCount - 2; }
 			} else if (gameMode.equalsIgnoreCase("Combination")) {
 				if (customInfo.multiPlayerLoc.size() < customInfo.humanCt) {
 					for (int i = customInfo.humanCt - 1; i > -1; i--) {
-						if (!customFrame.find(customInfo.multiPlayerLoc, new Integer(i))) { customInfo.multiPlayerLoc.add(i); } // not found - box not
-																																// selected
+						if (!customFrame.find(customInfo.multiPlayerLoc, new Integer(i))) {
+							customInfo.multiPlayerLoc.add(i);
+						} // not found - box not
+							// selected
 						if (customInfo.multiPlayerLoc.size() == customInfo.humanCt) { break; }
 					}
 				}
@@ -793,7 +807,8 @@ public class UserInterface extends JFrame implements AI31Constants {
 					} else {
 						if (decision == 0) {
 							do {
-								name = displayQuestionIgnoreNull("Enter the name of an AI or" + " -1 to randomize the name.", "Choose an AI name!");
+								name = displayQuestionIgnoreNull("Enter the name of an AI or" + " -1 to randomize the name.",
+										"Choose an AI name!");
 								if (name == null || name.equals("") || name.equals("-1")) {
 									break;
 								} else if (checkAI(name)) {
@@ -813,20 +828,22 @@ public class UserInterface extends JFrame implements AI31Constants {
 					}
 				}
 				displayInfo("31 is a game of swapping cards to gain the highest value in cards." + "\nYou will be facing "
-						+ (playerCount - humanCount - 1) + " highly skilled AI(s) and " + (humanCount - 1) + " human player(s)!"
-						+ "\nSee the rules on the left for how to play.", "Welcome to 31!");
+						+ (playerCount - humanCount - 1) + " highly skilled AI(s) and " + (humanCount - 1)
+						+ " human player(s)!" + "\nSee the rules on the left for how to play.", "Welcome to 31!");
 			}
 		} else {
 			String name = "";
-			int decision = JOptionPane.showOptionDialog(null, "Would you like to set the AI names?", "Custom AI names!", JOptionPane.YES_NO_OPTION,
-					JOptionPane.QUESTION_MESSAGE, null, null, 1);
+			int decision = JOptionPane.showOptionDialog(null, "Would you like to set the AI names?", "Custom AI names!",
+					JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, null, 1);
 			for (int i = 0; i < playerCount - 1; i++) {
 				if (i == customInfo.singlePlayerLoc) {
-					int decision1 = JOptionPane.showOptionDialog(null, "Would you like to set your human name?", "Custom human name choice!",
-							JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, null, 1);;
+					int decision1 = JOptionPane.showOptionDialog(null, "Would you like to set your human name?",
+							"Custom human name choice!", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, null,
+							1);;
 					if (decision1 == JOptionPane.YES_OPTION) {
 						do {
-							name = displayQuestion("Enter the name of the human player or -1 to randomize the name.", "Selecting your name.");
+							name = displayQuestion("Enter the name of the human player or -1 to randomize the name.",
+									"Selecting your name.");
 							if (name.equals("") || name.equals("-1")) {
 								break;
 							} else if (!checkAll(name)) { displayError("Please do not enter a duplicate human name."); }
@@ -843,7 +860,8 @@ public class UserInterface extends JFrame implements AI31Constants {
 				} else {
 					if (decision == JOptionPane.YES_OPTION) {
 						do {
-							name = displayQuestion("Enter the name of an AI player or -1 to randomize the name.", "Selecting AI names.");
+							name = displayQuestion("Enter the name of an AI player or -1 to randomize the name.",
+									"Selecting AI names.");
 							if (name.equals("") || name.equals("-1")) {
 								break;
 							} else if (!checkAll(name)) { displayError("Please do not enter a duplicate AI name."); }
@@ -855,8 +873,10 @@ public class UserInterface extends JFrame implements AI31Constants {
 					players.add(new Machine(i, this, name));
 				}
 			}
-			displayInfo("31 is a game of swapping cards to gain the highest value in cards." + "\nYou will be facing " + (playerCount - 2)
-					+ " highly skilled AI(s)!" + "\nSee the rules on the left for how to play.", "Welcome to 31!");
+			displayInfo(
+					"31 is a game of swapping cards to gain the highest value in cards." + "\nYou will be facing "
+							+ (playerCount - 2) + " highly skilled AI(s)!" + "\nSee the rules on the left for how to play.",
+					"Welcome to 31!");
 			int d = displayYesNo(
 					"Click 'Yes' to make your player an AI and 'No' to play as a human\n"
 							+ "(good for those players new to the game or those who like spectator sports).",
@@ -873,11 +893,10 @@ public class UserInterface extends JFrame implements AI31Constants {
 		playerTurn = startingPlayer;
 	}
 	/**
-	 * Ensures no duplicate human names exist. Enter a name for this to check and it will return whether the name is used or not (through human
-	 * names).
+	 * Ensures no duplicate human names exist. Enter a name for this to check and it will return whether the name is used or
+	 * not (through human names).
 	 * 
-	 * @param name
-	 *            - the name you want to check
+	 * @param name - the name you want to check
 	 * @return true if the name is not used, false if it is used
 	 */
 	protected boolean checkName(String name) {
@@ -885,10 +904,10 @@ public class UserInterface extends JFrame implements AI31Constants {
 		return true;
 	}
 	/**
-	 * Ensures no duplicate human names exist. Enter a name for this to check and it will return whether the name is used or not (through AI names).
+	 * Ensures no duplicate human names exist. Enter a name for this to check and it will return whether the name is used or
+	 * not (through AI names).
 	 * 
-	 * @param name
-	 *            - the name you want to check
+	 * @param name - the name you want to check
 	 * @return true if the name is not used, false if it is used
 	 */
 	protected boolean checkAI(String name) {
@@ -896,11 +915,10 @@ public class UserInterface extends JFrame implements AI31Constants {
 		return true;
 	}
 	/**
-	 * Essentially a combination of the methods checkName(String) and checkAI(name). Ensures no duplicate names exist. Enter a name for this to check
-	 * and it will return whether the name is used or not.
+	 * Essentially a combination of the methods checkName(String) and checkAI(name). Ensures no duplicate names exist. Enter
+	 * a name for this to check and it will return whether the name is used or not.
 	 * 
-	 * @param name
-	 *            - the name you want to check
+	 * @param name - the name you want to check
 	 * @return true if the name is not used, false if it is used
 	 */
 	protected boolean checkAll(String name) {
@@ -929,7 +947,8 @@ public class UserInterface extends JFrame implements AI31Constants {
 		}
 	}
 	/**
-	 * The preset possible names of the AIs. Did I miss one? Do you want one added? Email me. (If you know my number, you can text)
+	 * The preset possible names of the AIs. Did I miss one? Do you want one added? Email me. (If you know my number, you can
+	 * text)
 	 */
 	protected void addAINames() {// gives the AIs generic names (or some to my friends),
 		// so that the game has some people to reference. Why not?
@@ -994,7 +1013,8 @@ public class UserInterface extends JFrame implements AI31Constants {
 		// I need more names to avoid consistent repetition - goal is 50 total, including like ten slots for friends
 	}
 	/**
-	 * Adds the life status to the UI and calls nonRepeatTimer to run once (after the game speed amount of time has passed, the round will begin).
+	 * Adds the life status to the UI and calls nonRepeatTimer to run once (after the game speed amount of time has passed,
+	 * the round will begin).
 	 * 
 	 * @throws GameException
 	 */
@@ -1004,7 +1024,9 @@ public class UserInterface extends JFrame implements AI31Constants {
 		panel.addText("Lives count: \n");
 		System.out.println("Starting player: " + startingPlayer);
 		if (gameMode.equalsIgnoreCase("competition")) { System.out.println("Human player: " + humanPlayer); }
-		for (int i = 0; i < players.size() - 1; i++) { if (players.get(i) != null) { panel.addText(players.get(i).getLifeString() + "\n"); } }
+		for (int i = 0; i < players.size() - 1; i++) {
+			if (players.get(i) != null) { panel.addText(players.get(i).getLifeString() + "\n"); }
+		}
 		panel.updateTimerCounter(0);
 		nonRepeatTimer.restart();
 	}
@@ -1014,15 +1036,20 @@ public class UserInterface extends JFrame implements AI31Constants {
 	protected void dealAgain() {
 		try {
 			if (!multiPlayer) {
-				for (Player p : players) { if (p != null && p.getClass().getName().equals("AI31.Human")) { panel.addText(p + "\n"); } }
+				for (Player p : players) {
+					if (p != null && p.getClass().getName().equals("AI31.Human")) { panel.addText(p + "\n"); }
+				}
 			}
-			for (int i = 0; i < players.size() - 1; i++) { if (players.get(i) != null) { alivePlayers.add(new Integer(i)); } }
+			for (int i = 0; i < players.size() - 1; i++) {
+				if (players.get(i) != null) { alivePlayers.add(new Integer(i)); }
+			}
 			if (gameMode.equalsIgnoreCase("competition")) {
 				panel.updatePlayerHand();
 			} else {
 				panel.updateSpecificPlayerHand();
 			}
-			// for(int i=0; i<players.size(); i++) {displayInfo(i+": ("+players.get(i).getName()+"): "+players.get(i).getHand()+" Sum:
+			// for(int i=0; i<players.size(); i++) {displayInfo(i+": ("+players.get(i).getName()+"):
+			// "+players.get(i).getHand()+" Sum:
 			// "+players.get(i).sumOfHand());}
 			if (firstTurn == 1) { doFirstTurn(); }
 			nextPlayer();
@@ -1031,7 +1058,8 @@ public class UserInterface extends JFrame implements AI31Constants {
 		}
 	}
 	/**
-	 * Quite frankly calls for each player's turns and detects when the final player of the round has taken their turn, hence the name "doAITurns".
+	 * Quite frankly calls for each player's turns and detects when the final player of the round has taken their turn, hence
+	 * the name "doAITurns".
 	 */
 	protected void doAITurns() {
 		if (alivePlayers.size() == 0) {
@@ -1049,8 +1077,8 @@ public class UserInterface extends JFrame implements AI31Constants {
 	 */
 	protected void doFirstTurn() {
 		try {
-			displayInfo(players.get(playerTurn).getName() + " (" + playerTurn + ") is the starting player for round #" + roundCount + ".",
-					"Who starts round #" + roundCount + "?");
+			displayInfo(players.get(playerTurn).getName() + " (" + playerTurn + ") is the starting player for round #"
+					+ roundCount + ".", "Who starts round #" + roundCount + "?");
 			if (players.get(playerTurn).getClass().getName().equals("AI31.Human")) {
 				doFirstHumanTurn();
 			} else {
@@ -1082,7 +1110,8 @@ public class UserInterface extends JFrame implements AI31Constants {
 		}
 	}
 	/**
-	 * Does the dealer's turn for a human: Do you want to keep your cards or swap them with the middle three? This does NOT trigger final turn.
+	 * Does the dealer's turn for a human: Do you want to keep your cards or swap them with the middle three? This does NOT
+	 * trigger final turn.
 	 */
 	protected void doFirstHumanTurn() {
 		// playerTurn == players.size()-2
@@ -1091,12 +1120,13 @@ public class UserInterface extends JFrame implements AI31Constants {
 				int n = JOptionPane.showOptionDialog(null,
 						players.get(playerTurn).getName() + ": Look at your cards in the top right of the screen.\n"
 								+ "Would you like to swap your hand for the middle hand (yes or no)?",
-						"Would you like to swap your hand for the middle hand (yes or no)?", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE,
-						null, null, 1);
+						"Would you like to swap your hand for the middle hand (yes or no)?", JOptionPane.YES_NO_OPTION,
+						JOptionPane.QUESTION_MESSAGE, null, null, 1);
 
 				if (n == JOptionPane.YES_OPTION) {// yes
 					String spd = "You decided to swap your dealt hand with the middle hand.\n";
-					String mpd = players.get(playerTurn).getName() + " has decided to swap their dealt hand with the middle hand.\n";
+					String mpd = players.get(playerTurn).getName()
+							+ " has decided to swap their dealt hand with the middle hand.\n";
 					if (!multiPlayer) {
 						panel.addText(spd);
 						displayInfo(spd);
@@ -1133,8 +1163,7 @@ public class UserInterface extends JFrame implements AI31Constants {
 	/**
 	 * Each round of gameplay is essentially... one player's turn. Except exceptions are caught.
 	 * 
-	 * @throws GameException
-	 *             - if a PlayingCardException is thrown
+	 * @throws GameException - if a PlayingCardException is thrown
 	 */
 	protected void gameplay() throws GameException {// each run of gameplay is a turn of a player but with caught exceptions
 		if (!gameMode.equalsIgnoreCase("competition")) { panel.clearPlayerHand(); }
@@ -1156,8 +1185,7 @@ public class UserInterface extends JFrame implements AI31Constants {
 	/**
 	 * Essentially processes the turns of each player (takes care of and organizes the results of each player's turn)
 	 * 
-	 * @throws GameException
-	 *             - if something =goes wrong passing the player's turn or if the player does not make a decision
+	 * @throws GameException - if something =goes wrong passing the player's turn or if the player does not make a decision
 	 * @throws PlayingCardException
 	 */
 	protected void processTurns() throws GameException, PlayingCardException {
@@ -1213,13 +1241,16 @@ public class UserInterface extends JFrame implements AI31Constants {
 		panel.updateTimerCounter(3);
 	}
 	/**
-	 * Removes the lives from the players with the lowest hands, removes the dead players, and organizes the system for the next starting player. It
-	 * also determines whether the game is over or not. It is the hardest method to code, the most buggy, and the most essential. How wonderful.
+	 * Removes the lives from the players with the lowest hands, removes the dead players, and organizes the system for the
+	 * next starting player. It also determines whether the game is over or not. It is the hardest method to code, the most
+	 * buggy, and the most essential. How wonderful.
 	 */
 	protected void finishEndOfRound() {
 		try {
 			ArrayList<Player> newCopy = new ArrayList<Player>(players);
-			for (Iterator<Player> playerIt = newCopy.iterator(); playerIt.hasNext();) { if (playerIt.next() == null) { playerIt.remove(); } }
+			for (Iterator<Player> playerIt = newCopy.iterator(); playerIt.hasNext();) {
+				if (playerIt.next() == null) { playerIt.remove(); }
+			}
 			alivePlayerCount = newCopy.size() - 1;
 			boolean gameOver = false;
 			double[] handSums = new double[players.size() - 1];
@@ -1233,21 +1264,25 @@ public class UserInterface extends JFrame implements AI31Constants {
 			double minSum = 100.0;
 			for (int i = 0; i < players.size() - 1; i++) { if (handSums[i] < minSum) { minSum = handSums[i]; } }
 			ArrayList<Player> livesLostPlayers = new ArrayList<Player>();
-			for (int i = 0; i < players.size() - 1; i++) { if (minSum == handSums[i]) { livesLostPlayers.add(players.get(i)); } }
+			for (int i = 0; i < players.size() - 1; i++) {
+				if (minSum == handSums[i]) { livesLostPlayers.add(players.get(i)); }
+			}
 			for (int i = 0; i < livesLostPlayers.size(); i++) {
 				livesLostPlayers.get(i).removeLife();
 				if (panel.getEliminationStatus() == UserPanel.LIVES_AND_ELIMINATIONS
 						|| panel.getEliminationStatus() == UserPanel.LIVES_NOT_ELIMINATIONS) {
 					if (livesLostPlayers.get(i).getClass().getName().equals("AI31.Human") && !multiPlayer) {
 						if (players.get(findPlayer(livesLostPlayers.get(i))).getLives() != 1) {
-							displayInfo("You currently have " + players.get(findPlayer(livesLostPlayers.get(i))).getLives() + " lives remaining.",
-									"You have lost a life this round.");
+							displayInfo("You currently have " + players.get(findPlayer(livesLostPlayers.get(i))).getLives()
+									+ " lives remaining.", "You have lost a life this round.");
 						} else {
 							displayInfo("You currently have 1 life remaining.", "You have lost a life this round.");
 						}
 					} else {
 						if (livesLostPlayers.get(i).getLives() != 1) {
-							displayInfo(livesLostPlayers.get(i).getName() + ": I have " + livesLostPlayers.get(i).getLives() + " lives remaining.",
+							displayInfo(
+									livesLostPlayers.get(i).getName() + ": I have " + livesLostPlayers.get(i).getLives()
+											+ " lives remaining.",
 									livesLostPlayers.get(i).getName() + " has lost a life this round.");
 						} else {
 							displayInfo(livesLostPlayers.get(i).getName() + ": I have 1 life remaining.",
@@ -1265,7 +1300,8 @@ public class UserInterface extends JFrame implements AI31Constants {
 							displayInfo("There are " + alivePlayerCount + " alive players remaining.",
 									livesLostPlayers.get(i).getName() + " has been eliminated.");
 						} else {
-							displayInfo("There is 1 alive player remaining.", livesLostPlayers.get(i).getName() + " has been eliminated.");
+							displayInfo("There is 1 alive player remaining.",
+									livesLostPlayers.get(i).getName() + " has been eliminated.");
 						}
 					}
 					int dead = findPlayer(livesLostPlayers.get(i));
@@ -1274,7 +1310,8 @@ public class UserInterface extends JFrame implements AI31Constants {
 				boolean humansAlive = false;
 				for (int k = 0; k < players.size(); k++) {
 					if (players.get(k) != null) {
-						if (!players.get(k).isAlive() && multiPlayer && players.get(k).getClass().getName().equals("AI31.Human")) {
+						if (!players.get(k).isAlive() && multiPlayer
+								&& players.get(k).getClass().getName().equals("AI31.Human")) {
 							int ct = alivePlayerCount + 1;
 							// one subtracted when eliminated, add one to represent placement
 							String print = players.get(k).getName() + " has won ";
@@ -1334,33 +1371,36 @@ public class UserInterface extends JFrame implements AI31Constants {
 			}
 
 			/*
-			 * Finds the current starting player and checks if the next player is alive. If not, the next alive player will be the new starting
-			 * player. Starting player pseudocode: if a player is starting set them to no longer start if the next player is alive set the next player
-			 * to be starting else if someone is alive set the next alive player to be starting else throw an exception stating that no players are
-			 * alive
+			 * Finds the current starting player and checks if the next player is alive. If not, the next alive player will
+			 * be the new starting player. Starting player pseudocode: if a player is starting set them to no longer start if
+			 * the next player is alive set the next player to be starting else if someone is alive set the next alive player
+			 * to be starting else throw an exception stating that no players are alive
 			 * 
 			 */
 			/*
-			 * for(int i=0; i<players.size(); i++) { if(players.get(players.size()-1).isStarting()) { if(players.get(0).isAlive())
-			 * {players.get(0).setStarting(true);} else {for(int k=0; k<players.size(); k++) {if(players.get(k).getLives()>0)
-			 * {if(players.get(k).setStarting(true)) {break;}}}} } else if(players.get(i).isStarting()) { if(players.get(i+1).isAlive())
-			 * {players.get(i+1).setStarting(true);} else { for(int k=i+1; k<players.size(); k++) { if(players.get(k).isAlive())
-			 * {players.get(k).setStarting(true); break;} if(k==players.size()-1) {k = -1;} else if(k==i) {throw new
+			 * for(int i=0; i<players.size(); i++) { if(players.get(players.size()-1).isStarting()) {
+			 * if(players.get(0).isAlive()) {players.get(0).setStarting(true);} else {for(int k=0; k<players.size(); k++)
+			 * {if(players.get(k).getLives()>0) {if(players.get(k).setStarting(true)) {break;}}}} } else
+			 * if(players.get(i).isStarting()) { if(players.get(i+1).isAlive()) {players.get(i+1).setStarting(true);} else {
+			 * for(int k=i+1; k<players.size(); k++) { if(players.get(k).isAlive()) {players.get(k).setStarting(true);
+			 * break;} if(k==players.size()-1) {k = -1;} else if(k==i) {throw new
 			 * GameErrorException("No players are alive.");} } } players.get(i).setStarting(false); } }
 			 */
 			/*
-			 * ArrayList<Player> playerOrder = new ArrayList<Player>(players); int startPlayer = 0; for(int i=0; i<players.size(); i++)
-			 * {if(players.get(i).getStarting()) {startPlayer = i; players.get(i).setStarting(false); break;}} for(int i=0; i<startPlayer; i++)
-			 * {playerOrder.add(playerOrder.remove(0));} //shifts the elements to the back in the original order for(int i=0; i<playerOrder.size();
-			 * i++) {System.out.println(i+": "+playerOrder.get(i).getName());} for(int i=1; i<playerOrder.size(); i++)
-			 * {if(playerOrder.get(i).isAlive()) {playerOrder.get(i).setStarting(true); break;} if(i==playerOrder.size()-1) {throw new
-			 * GameErrorException("No players are alive, seemingly. Error #X4444");}}
+			 * ArrayList<Player> playerOrder = new ArrayList<Player>(players); int startPlayer = 0; for(int i=0;
+			 * i<players.size(); i++) {if(players.get(i).getStarting()) {startPlayer = i; players.get(i).setStarting(false);
+			 * break;}} for(int i=0; i<startPlayer; i++) {playerOrder.add(playerOrder.remove(0));} //shifts the elements to
+			 * the back in the original order for(int i=0; i<playerOrder.size(); i++)
+			 * {System.out.println(i+": "+playerOrder.get(i).getName());} for(int i=1; i<playerOrder.size(); i++)
+			 * {if(playerOrder.get(i).isAlive()) {playerOrder.get(i).setStarting(true); break;} if(i==playerOrder.size()-1)
+			 * {throw new GameErrorException("No players are alive, seemingly. Error #X4444");}}
 			 */
 			/*
-			 * for(int i=0; i<players.size()-1; i++) { if(players.get(i).getStarting()) { players.get(i).setStarting(false); int k = i+1;
-			 * if(k==players.size()-1) {k=0;} boolean found = false; for(int j=k; j<players.size()-1; j++)
-			 * {if(allPlayers.get(j).isAlive()){allPlayers.get(j).setStarting(true); found = true; break;} if(j==allPlayers.size()-2) {j=-1;} if(j==i)
-			 * {throw new GameErrorException("No players are alive, seemingly. Error #X4444");}} if(found) {break;} } }
+			 * for(int i=0; i<players.size()-1; i++) { if(players.get(i).getStarting()) { players.get(i).setStarting(false);
+			 * int k = i+1; if(k==players.size()-1) {k=0;} boolean found = false; for(int j=k; j<players.size()-1; j++)
+			 * {if(allPlayers.get(j).isAlive()){allPlayers.get(j).setStarting(true); found = true; break;}
+			 * if(j==allPlayers.size()-2) {j=-1;} if(j==i) {throw new
+			 * GameErrorException("No players are alive, seemingly. Error #X4444");}} if(found) {break;} } }
 			 */
 			boolean found = false;
 			ArrayList<Player> pCopy = new ArrayList<Player>(players);
@@ -1373,8 +1413,14 @@ public class UserInterface extends JFrame implements AI31Constants {
 			}
 			boolean startAlive = true;
 			if (players.get(startingPlayer) == null) { startAlive = false; }
-			for (int i = startingPlayer + 1; i < players.size() - 1; i++) { if (players.get(i) != null) { found = true; startingPlayer = i; break; } }
-			if (!found) { for (int i = 0; i < startingPlayer; i++) { if (players.get(i) != null) { found = true; startingPlayer = i; break; } } }
+			for (int i = startingPlayer + 1; i < players.size() - 1; i++) {
+				if (players.get(i) != null) { found = true; startingPlayer = i; break; }
+			}
+			if (!found) {
+				for (int i = 0; i < startingPlayer; i++) {
+					if (players.get(i) != null) { found = true; startingPlayer = i; break; }
+				}
+			}
 			if (!found) { gameOver = gameOver(); }
 			if (!gameOver) {
 				livesLostPlayers.clear();
@@ -1396,7 +1442,9 @@ public class UserInterface extends JFrame implements AI31Constants {
 				System.out.println(players.get(startingPlayer).getName() + " is still the new starting player.");
 				if (gameMode.equalsIgnoreCase("competition")) {
 					for (int i = 0; i < players.size() - 1; i++) {
-						if (players.get(i) != null && players.get(i).getClass().getName().equals("AI31.Human")) { humanPlayer = i; }
+						if (players.get(i) != null && players.get(i).getClass().getName().equals("AI31.Human")) {
+							humanPlayer = i;
+						}
 					}
 				}
 			}
@@ -1410,8 +1458,9 @@ public class UserInterface extends JFrame implements AI31Constants {
 					playerNames.clear();
 					new UserInterface();
 					/*
-					 * panel.changeStatus(-5, true); panel.changeStatus(-6, true); displayInfo("Use the top panel of components to start a new game!",
-					 * "Ready for the next game!"); panel.gameOver = true;
+					 * panel.changeStatus(-5, true); panel.changeStatus(-6, true);
+					 * displayInfo("Use the top panel of components to start a new game!", "Ready for the next game!");
+					 * panel.gameOver = true;
 					 */
 				} else {
 					System.exit(0);
@@ -1432,7 +1481,9 @@ public class UserInterface extends JFrame implements AI31Constants {
 	protected boolean gameOver() {
 		try {
 			ArrayList<Player> truePlayers = new ArrayList<Player>(players);
-			for (Iterator<Player> iter = truePlayers.iterator(); iter.hasNext();) { if (iter.next() == null) { iter.remove(); } }
+			for (Iterator<Player> iter = truePlayers.iterator(); iter.hasNext();) {
+				if (iter.next() == null) { iter.remove(); }
+			}
 			if (truePlayers.size() == 2 && !multiPlayer) {
 				int result = displayYesNo("You win 1st place!\nWant to play again?", "Congratulations!");
 				if (result == 0) {
@@ -1507,18 +1558,21 @@ public class UserInterface extends JFrame implements AI31Constants {
 		if (gameMode.equalsIgnoreCase("competition")) { panel.updatePlayerHand(); }
 	}
 	/**
-	 * Adds the cards to be dealt for the game. If players have specific cards for a set amount of rounds, this will give them the cards. Note that
-	 * the players must be added BEFORE using this method, otherwise an IndexOutOfBounds exception will run.
+	 * Adds the cards to be dealt for the game. If players have specific cards for a set amount of rounds, this will give
+	 * them the cards. Note that the players must be added BEFORE using this method, otherwise an IndexOutOfBounds exception
+	 * will run.
 	 */
 	protected void addCards() {
 		try {
 			if (customInfo != null && customInfo.specificCards) {// customInfo implies customFrame is non-null
 				// specific cards enabled - cards are set
 				cards.addAll(specificInfo.allAvailableCards);
-				if (specificInfo.specificCardsEnabled && specificInfo.specificRoundCt != 0 && specificInfo.cardsAddedToPlayers != 0) {
+				if (specificInfo.specificCardsEnabled && specificInfo.specificRoundCt != 0
+						&& specificInfo.cardsAddedToPlayers != 0) {
 					for (int i = 0; i < customInfo.playerCt; i++) {
 						if (!(specificInfo.playerCards.get(i) == null || specificInfo.playerCards.get(i).cards[0] == null)) {
-							ArrayList<Card31> playerCard = new ArrayList<Card31>(Arrays.asList(specificInfo.playerCards.get(i).cards));
+							ArrayList<Card31> playerCard = new ArrayList<Card31>(
+									Arrays.asList(specificInfo.playerCards.get(i).cards));
 							for (int i1 = 0; i1 < playerCard.size(); i1++) {
 								if (playerCard.get(i1) == null) {
 									playerCard.remove(i1);
@@ -1528,7 +1582,9 @@ public class UserInterface extends JFrame implements AI31Constants {
 								}
 							}
 							if (players.get(i) != null) { players.get(i).addHand(playerCard); }
-							if (players.get(i).getClass().getName().equals("AI31.MiddleHand")) { System.out.println("Added Middle Hand"); }
+							if (players.get(i).getClass().getName().equals("AI31.MiddleHand")) {
+								System.out.println("Added Middle Hand");
+							}
 						}
 					}
 				}
@@ -1559,7 +1615,8 @@ public class UserInterface extends JFrame implements AI31Constants {
 	 * <html> Deals the cards out to the players. <br>
 	 * If a player has a preset hand from custom mode, it gives the player the hand and randomizes the remaining cards. <br>
 	 * If not, it gives the player three pseudorandomly selected cards. <br>
-	 * If the "Set Random Suit Quantities" option is selected, random cards are generated per suit quantity, in suit order. </html>
+	 * If the "Set Random Suit Quantities" option is selected, random cards are generated per suit quantity, in suit order.
+	 * </html>
 	 */
 	protected void dealCards() {
 		boolean suitQuantitiesInfo = false;
@@ -1567,7 +1624,8 @@ public class UserInterface extends JFrame implements AI31Constants {
 			if (specificInfo.suitQuantities != null) {
 				if (isCustom) {
 					for (int i = 0; i < 4; i++) {
-						if (specificInfo.suitQuantities[i] != null && specificInfo.suitQuantities[i] != customFrame.antiQuantity) {
+						if (specificInfo.suitQuantities[i] != null
+								&& specificInfo.suitQuantities[i] != customFrame.antiQuantity) {
 							suitQuantitiesInfo = true;
 							break;
 						}
@@ -1581,30 +1639,35 @@ public class UserInterface extends JFrame implements AI31Constants {
 		if (specificInfo != null && specificInfo.specificCardsEnabled && specificInfo.specificRoundCt != 0) {
 			// remove nulls here
 			try {
-			for (Player p : players) {
-				if (p != null) {
-					while (p.getHand().remove(null)) {} // removes all null instances no matter what from each player hand
-					if (!suitQuantitiesInfo) { for (int i = p.getHand().size(); i < 3; i++) { p.addCard(generateCard()); } }
-					// only generate cards if all of the suit quantities are anti quantities
+				for (Player p : players) {
+					if (p != null) {
+						while (p.getHand().remove(null)) {} // removes all null instances no matter what from each player
+															// hand
+						if (!suitQuantitiesInfo) {
+							for (int i = p.getHand().size(); i < 3; i++) { p.addCard(generateCard()); }
+						}
+						// only generate cards if all of the suit quantities are anti quantities
+					}
 				}
-			}
-			}
-			catch(GameException e) {
+			} catch (GameException e) {
 				displayError(e);
 			}
 			if (suitQuantitiesInfo) {
 				/*
 				 * for(int i=0; i<4; i++) {//4 suits specificInfo.suitQuantities[i].randomize();
 				 * System.out.println(specificInfo.suitQuantities[i].toString()+"\nAAA"); //System.out.println("HI");
-				 * if(specificInfo.suitQuantities[i] != customFrame.antiQuantity) {//not equal to the deafult, the antiQuantity - this takes care of
-				 * non-generated values for(int k=0; k<specificInfo.suitQuantities[i].randomVal; k++) {//this number of cards
-				 * //System.out.println("HELLO"); //add this set number of cards to players for(Player p : players) {//three cards per player
-				 * if(p!=null) { //let us retry compatibility //System.out.println("MAYBE HI"); for(int l=p.getHand().size(); l<3; l++) { if(p!=null)
-				 * { Card31 c = null; while(c==null) { //if the suit is not the selected one //System.out.println("MASTER RACE"); //the suits
+				 * if(specificInfo.suitQuantities[i] != customFrame.antiQuantity) {//not equal to the deafult, the
+				 * antiQuantity - this takes care of non-generated values for(int k=0;
+				 * k<specificInfo.suitQuantities[i].randomVal; k++) {//this number of cards //System.out.println("HELLO");
+				 * //add this set number of cards to players for(Player p : players) {//three cards per player if(p!=null) {
+				 * //let us retry compatibility //System.out.println("MAYBE HI"); for(int l=p.getHand().size(); l<3; l++) {
+				 * if(p!=null) { Card31 c = null; while(c==null) { //if the suit is not the selected one
+				 * //System.out.println("MASTER RACE"); //the suits
 				 * 
-				 * try {c = generateSuitCard(AI31Constants.ORDERED_SUITS[i]);} catch(GameErrorException e) {displayException(e, 0); c = null;}
-				 * if(cardCount(AI31Constants.ORDERED_SUITS[i]) == 0) {break;} } cards.remove(c); p.addCard(c); c = null; } } } } boolean done1 =
-				 * true; for(Player p : players) {if(p.getHand().size() != 3) {done1 = false;}} if(done1) {done = true;} if(done) {break;} } if(done)
+				 * try {c = generateSuitCard(AI31Constants.ORDERED_SUITS[i]);} catch(GameErrorException e)
+				 * {displayException(e, 0); c = null;} if(cardCount(AI31Constants.ORDERED_SUITS[i]) == 0) {break;} }
+				 * cards.remove(c); p.addCard(c); c = null; } } } } boolean done1 = true; for(Player p : players)
+				 * {if(p.getHand().size() != 3) {done1 = false;}} if(done1) {done = true;} if(done) {break;} } if(done)
 				 * {break;} } }
 				 */
 				int totalCards = 0;// total number of cards that have been added
@@ -1620,7 +1683,8 @@ public class UserInterface extends JFrame implements AI31Constants {
 					System.out.println(players.get(i).getHand().size() + ": " + i);
 					totalCards += players.get(i).getHand().size();
 				}
-				// totalCards is originally the number of cards that exist in the player hands - subtract the total number of cards from this to get
+				// totalCards is originally the number of cards that exist in the player hands - subtract the total number of
+				// cards from this to get
 				// the new value
 				totalCards = (3 * customInfo.playerCt) - totalCards;
 				System.out.println("Total cards: " + totalCards);
@@ -1643,29 +1707,32 @@ public class UserInterface extends JFrame implements AI31Constants {
 					}
 				}
 				try {
-				for (Player p : players) {
-					if (p.getHand().size() < 3) {
-						for (int i = p.getHand().size(); i < 3; i++) {
-							p.addCard(addCards.remove(new Random().nextInt(addCards.size())));
+					for (Player p : players) {
+						if (p.getHand().size() < 3) {
+							for (int i = p.getHand().size(); i < 3; i++) {
+								p.addCard(addCards.remove(new Random().nextInt(addCards.size())));
+							}
 						}
 					}
-				}
-				} catch(GameException e) {
+				} catch (GameException e) {
 					displayError(e);
 				}
 				// generate the cards prior to this
 				// instead, I will pre-generate enough cards to
 				/*
 				 * for(int i=0; i<totalCards; i++) {//maybe there isn't enough time... if(cardsPerSuit[chosenSuitNum] <
-				 * specificInfo.suitQuantities[chosenSuitNum].randomVal) { boolean allDone = true; int random = (int)(Math.random() *
-				 * players.size());//random number from 0 to player size Collections.shuffle(specificInfo.availableSuits); chosenSuitNum =
-				 * (int)(Math.random() * specificInfo.availableSuits.size()); System.out.println("Chosen suit num #"+i+": "+chosenSuitNum); String
-				 * chosenSuit = specificInfo.availableSuits.get(chosenSuitNum); cardsPerSuit[chosenSuitNum]++; //counts irrelevant of a cap on a
-				 * per-suit basis try {if(players.get(random).getHand().size() < 3)
-				 * {players.get(random).addCard(generateSuitCard(chosenSuit));}else{i--;}} catch(GameErrorException e) {displayException(e, 0);}
-				 * for(Player p : players) {System.out.println(p.getName()+", "+p.getHand().size()); if(p.getHand().size() < 3) {allDone = false;
-				 * break;}} if(allDone) {System.out.println("DONE"); break;}//enough cards, I guess, or really? Idk } } for(Player p : players)
-				 * {if(p.getHand().size() < 3) {for(int i=p.getHand().size(); i<3; i++) {p.addCard(generateCard());}}}
+				 * specificInfo.suitQuantities[chosenSuitNum].randomVal) { boolean allDone = true; int random =
+				 * (int)(Math.random() * players.size());//random number from 0 to player size
+				 * Collections.shuffle(specificInfo.availableSuits); chosenSuitNum = (int)(Math.random() *
+				 * specificInfo.availableSuits.size()); System.out.println("Chosen suit num #"+i+": "+chosenSuitNum); String
+				 * chosenSuit = specificInfo.availableSuits.get(chosenSuitNum); cardsPerSuit[chosenSuitNum]++; //counts
+				 * irrelevant of a cap on a per-suit basis try {if(players.get(random).getHand().size() < 3)
+				 * {players.get(random).addCard(generateSuitCard(chosenSuit));}else{i--;}} catch(GameErrorException e)
+				 * {displayException(e, 0);} for(Player p : players)
+				 * {System.out.println(p.getName()+", "+p.getHand().size()); if(p.getHand().size() < 3) {allDone = false;
+				 * break;}} if(allDone) {System.out.println("DONE"); break;}//enough cards, I guess, or really? Idk } }
+				 * for(Player p : players) {if(p.getHand().size() < 3) {for(int i=p.getHand().size(); i<3; i++)
+				 * {p.addCard(generateCard());}}}
 				 */
 			}
 			specificInfo.specificRoundCt--;
@@ -1677,12 +1744,12 @@ public class UserInterface extends JFrame implements AI31Constants {
 				for (Player p : players) {
 					if (p != null) {
 						try {
-						card = r.nextInt(cards.size());// 0 to size-1
-						c = cards.remove(card);
-						p.addCard(c);// adds the card c and removes the card from the arraylist, making sured there are no shallow copies
-						c = null;// to ensure that c is reset
-						}
-						catch(GameException e) {
+							card = r.nextInt(cards.size());// 0 to size-1
+							c = cards.remove(card);
+							p.addCard(c);// adds the card c and removes the card from the arraylist, making sured there are
+											// no shallow copies
+							c = null;// to ensure that c is reset
+						} catch (GameException e) {
 							displayError(e);
 						}
 					}
@@ -1717,10 +1784,9 @@ public class UserInterface extends JFrame implements AI31Constants {
 	 * 12: Spades, Clubs, or Diamonds, or<br>
 	 * 13: Spades, Clubs, or Hearts.<br>
 	 * 
-	 * @param condition
-	 *            - the number of the choice of suits (which number represents the suits you want?) <b> Let me know if I missed any! </b>
-	 * @throws GameException
-	 *             if the given condition is invalid or there are no available cards for the given conditions
+	 * @param condition - the number of the choice of suits (which number represents the suits you want?) <b> Let me know if
+	 *            I missed any! </b>
+	 * @throws GameException if the given condition is invalid or there are no available cards for the given conditions
 	 */
 	protected Card31 generateSuitCard(int condition) throws GameException {
 		ArrayList<String> chosenSuits = new ArrayList<String>(3);
@@ -1782,7 +1848,8 @@ public class UserInterface extends JFrame implements AI31Constants {
 				chosenSuits.add("hearts");
 				break;
 			default :
-				throw new GameException("Please enter a valid index for a suit or combination of suits (read the javadoc).", "E3295");
+				throw new GameException("Please enter a valid index for a suit or combination of suits (read the javadoc).",
+						"E3295");
 		}
 		Collections.shuffle(cards);
 		Collections.shuffle(chosenSuits);
@@ -1795,7 +1862,8 @@ public class UserInterface extends JFrame implements AI31Constants {
 			for (int i = 0; i < chosenSuits.size(); i++) {
 				if (suitAvailable(chosenSuits.get(i))) { break; }
 				if (i == chosenSuits.size() - 1) {
-					throw new GameException("No cards that match the given suit parameters are currently available.", "G1985");
+					throw new GameException("No cards that match the given suit parameters are currently available.",
+							"G1985");
 				}
 			}
 
@@ -1805,13 +1873,10 @@ public class UserInterface extends JFrame implements AI31Constants {
 	/**
 	 * Generates a random card based on a suit or set of suits, specified by the suit and suits varaiables.
 	 * 
-	 * @param suit
-	 *            - the first suit you want to add
-	 * @param suits
-	 *            - all the remaining suits you want to add
+	 * @param suit - the first suit you want to add
+	 * @param suits - all the remaining suits you want to add
 	 * @return a card that matches the specified suit
-	 * @throws GameException
-	 *             - if there are no available cards given the selected suit
+	 * @throws GameException - if there are no available cards given the selected suit
 	 */
 	protected Card31 generateSuitCard(String suit, String... suits) throws GameException {
 		if (suits == null || suits.length > 2) { return null; }
@@ -1829,7 +1894,8 @@ public class UserInterface extends JFrame implements AI31Constants {
 			for (int i = 0; i < chosenSuits.size(); i++) {
 				if (suitAvailable(chosenSuits.get(i))) { break; }
 				if (i == chosenSuits.size() - 1) {
-					throw new GameException("No cards that match the given suit parameters are currently available.", "B663");
+					throw new GameException("No cards that match the given suit parameters are currently available.",
+							"B663");
 				}
 			}
 
@@ -1838,8 +1904,7 @@ public class UserInterface extends JFrame implements AI31Constants {
 	/**
 	 * How many available cards per suit are there?
 	 * 
-	 * @param suit
-	 *            - what suit do you want to check?
+	 * @param suit - what suit do you want to check?
 	 * @return the number of cards in that suit
 	 */
 	protected int cardCount(String suit) {
@@ -1848,8 +1913,8 @@ public class UserInterface extends JFrame implements AI31Constants {
 		return counter;
 	}
 	/**
-	 * Ends the current player's turn and beings the next player's turn. If this is the final turn, it removes the player from the list of alive
-	 * players for the round.
+	 * Ends the current player's turn and beings the next player's turn. If this is the final turn, it removes the player
+	 * from the list of alive players for the round.
 	 */
 	protected void nextPlayer() {
 		if (firstTurn == -1) { alivePlayers.remove(new Integer(playerTurn)); }
@@ -1871,10 +1936,8 @@ public class UserInterface extends JFrame implements AI31Constants {
 	/**
 	 * Shuffles the given array.
 	 * 
-	 * @param <T>
-	 *            - the reference object of the array
-	 * @param info
-	 *            0- the array that is intended to be shuffled
+	 * @param <T> - the reference object of the array
+	 * @param info 0- the array that is intended to be shuffled
 	 * @return a shuffled copy of the array
 	 */
 	protected <T> T[] shuffle(T[] info) {
@@ -1902,8 +1965,7 @@ public class UserInterface extends JFrame implements AI31Constants {
 	/**
 	 * Finds the given Player and returns the location of the Player.
 	 * 
-	 * @param p
-	 *            - the Player you want to find
+	 * @param p - the Player you want to find
 	 * @return the index location of the Player
 	 */
 	protected int findPlayer(Player p) {// where will I use this?
@@ -1978,7 +2040,8 @@ public class UserInterface extends JFrame implements AI31Constants {
 	protected SpecificCardsInfo getSpecificInfo() { return specificInfo; }
 	/**
 	 * 
-	 * @return the location of the human player if the mode is competition (or custom competition), 0 if the mode is not competition
+	 * @return the location of the human player if the mode is competition (or custom competition), 0 if the mode is not
+	 *         competition
 	 */
 	protected int getHumanPlayer() {
 		if (gameMode.equalsIgnoreCase("competition")) {
@@ -1992,8 +2055,7 @@ public class UserInterface extends JFrame implements AI31Constants {
 	/**
 	 * Updates the speed of the repeating timer (how fast between calls?)
 	 * 
-	 * @param ms
-	 *            - how long it takes between method pings (the shorter the speed the shorter the delay)
+	 * @param ms - how long it takes between method pings (the shorter the speed the shorter the delay)
 	 */
 	protected void updateTimer(int ms) {
 		timer.setDelay(ms);
@@ -2002,8 +2064,7 @@ public class UserInterface extends JFrame implements AI31Constants {
 	/**
 	 * Starts or ends the timer based on the parameter.
 	 * 
-	 * @param sOE
-	 *            - true if you want to restart the timer, false to end the timer
+	 * @param sOE - true if you want to restart the timer, false to end the timer
 	 */
 	protected void startOrEndTimer(boolean sOE) {
 		if (sOE) {
@@ -2013,10 +2074,10 @@ public class UserInterface extends JFrame implements AI31Constants {
 		}
 	}
 	/**
-	 * Starts or ends the non repeating timer. The only difference: this will affect the non-repeating timer, not the repeating timer
+	 * Starts or ends the non repeating timer. The only difference: this will affect the non-repeating timer, not the
+	 * repeating timer
 	 * 
-	 * @param sOe
-	 *            - true if the game is starting and you want to restart the timer, false if you want to end the game.
+	 * @param sOe - true if the game is starting and you want to restart the timer, false if you want to end the game.
 	 * @see #startOrEndTimer(boolean)
 	 * 
 	 */
@@ -2028,10 +2089,10 @@ public class UserInterface extends JFrame implements AI31Constants {
 		}
 	}
 	/**
-	 * Updates the speed of the non repeating timer. Note that this applies for the non-repeating timer, not the repeating timer.
+	 * Updates the speed of the non repeating timer. Note that this applies for the non-repeating timer, not the repeating
+	 * timer.
 	 * 
-	 * @param ms
-	 *            - the amount (in milliseconds) the timer will run for
+	 * @param ms - the amount (in milliseconds) the timer will run for
 	 * @see #updateTimer(int)
 	 * 
 	 */
@@ -2042,10 +2103,10 @@ public class UserInterface extends JFrame implements AI31Constants {
 	/**
 	 * <html> Sets the game mode and checks for custom mode.
 	 * 
-	 * @param mode
-	 *            - the gamemode you want the game to be in <br>
+	 * @param mode - the gamemode you want the game to be in <br>
 	 *            <br>
-	 *            DO NOT use this method without knowing the human counts - how many humans? 1? Everyone? Between 1 and everyone? <br>
+	 *            DO NOT use this method without knowing the human counts - how many humans? 1? Everyone? Between 1 and
+	 *            everyone? <br>
 	 *            Just a reminder: <br>
 	 *            "competition" means single player <br>
 	 *            "friendly" means every non-mid Player is a human <br>
@@ -2071,19 +2132,18 @@ public class UserInterface extends JFrame implements AI31Constants {
 	/**
 	 * Sets the number of players. Currently unsure of whether is considers the mid or not.
 	 * 
-	 * @param ct
-	 *            - the number of players
+	 * @param ct - the number of players
 	 */
 	protected void setPlayerCount(int ct) {
 		playerCount = ct;
-		if (ct > 9 && ct < 14) { minimumCardNumber -= (ct - 9); } // 10 players - 6 and above, 12 - 4 and above, 13 - 3 and above (no more)
+		if (ct > 9 && ct < 14) { minimumCardNumber -= (ct - 9); } // 10 players - 6 and above, 12 - 4 and above, 13 - 3 and
+																	// above (no more)
 		if (ct <= 4) { minimumCardNumber = 8; }
 	}
 	/**
 	 * Sets the number of humans.
 	 * 
-	 * @param ct
-	 *            - the number of human players
+	 * @param ct - the number of human players
 	 */
 	protected void setHumanCount(int ct) {
 		if (ct < 0 || ct > playerCount) {
@@ -2095,22 +2155,19 @@ public class UserInterface extends JFrame implements AI31Constants {
 	/**
 	 * Sets the life count for each player.
 	 * 
-	 * @param ct
-	 *            - the number of lives each player starts with
+	 * @param ct - the number of lives each player starts with
 	 */
 	protected void setLifeCount(int ct) { Player.setLifeCounter(ct); }
 	/**
 	 * Sets whether the game is multiplayer or singleplayer.
 	 * 
-	 * @param setting
-	 *            - whether multiplayer is enabled or disabled (true for enabled, false for disabled)
+	 * @param setting - whether multiplayer is enabled or disabled (true for enabled, false for disabled)
 	 */
 	protected void setMultiPlayer(boolean setting) { multiPlayer = setting; }
 	/**
 	 * Sets the custom mode information.
 	 * 
-	 * @param info
-	 *            - the custom mode information object
+	 * @param info - the custom mode information object
 	 */
 	protected void setCustomInfo(CustomModeInfo info) {
 		// new CustomModeInfo(info);
@@ -2119,15 +2176,13 @@ public class UserInterface extends JFrame implements AI31Constants {
 	/**
 	 * Sets the specific cards information.
 	 * 
-	 * @param sci
-	 *            - the specific cards info object
+	 * @param sci - the specific cards info object
 	 */
 	protected void setSpecificCardsInfo(SpecificCardsInfo sci) { specificInfo = sci; }
 	/**
 	 * Finds whether the specified suit exists in the cards arraylist.
 	 * 
-	 * @param suit
-	 *            - the suit you are searching for
+	 * @param suit - the suit you are searching for
 	 * @return true if a card with the specified suit exists, false if no cards with the specified suit exist
 	 */
 	protected boolean suitAvailable(String suit) {
@@ -2139,8 +2194,7 @@ public class UserInterface extends JFrame implements AI31Constants {
 	/**
 	 * The good old main method. You don't need to know what happens here, except that this makes Swing thread safe (?)
 	 * 
-	 * @param args
-	 *            - the given arguments by the system
+	 * @param args - the given arguments by the system
 	 */
 	public static void main(String[] args) {
 		askedInfo = false;
