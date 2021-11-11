@@ -571,12 +571,14 @@ public class UserPanel extends JPanel implements ActionListener, AI31Constants, 
 		infoMenu = new JMenu("Help");
 		menuBar.add(infoMenu);
 		helpItem = new JMenuItem("Rules");
+		helpItem.addActionListener(this);
 		pauseItem = new JMenuItem("Pause");
-		
+		pauseItem.addActionListener(this);
 
 		// one to two extra menus and
+		//pull whats from the bottom of the screen
 
-		// the menus I want to create are going to be the ones in the bottom panel, evetually I will be able to drag and drop
+		// the menus I want to create are going to be the ones in the bottom panel, eventually I will be able to drag and drop
 		// at least I hope to be able to drag 'n' drop soon
 	}
 	/**
@@ -588,7 +590,10 @@ public class UserPanel extends JPanel implements ActionListener, AI31Constants, 
 	public void createLayeredPaneling() {
 
 	}
-	protected void addCardComponents() {
+	/**
+	 * Adds the card labels to the game.
+	 */
+	private void addCardComponents() {
 		// adds the cards you see
 		playerImage1 = new JLabel(new ImageIcon(backImage));
 		playerImage2 = new JLabel(new ImageIcon(backImage));
@@ -679,7 +684,11 @@ public class UserPanel extends JPanel implements ActionListener, AI31Constants, 
 		c.gridy = 1;
 		centerPanel.add(cpuImagePanel, c);
 	}
-	protected void addSetUpComponents() {
+	/**
+	 * Creates the set up components.
+	 */
+	@SuppressWarnings("rawtypes")
+	private void addSetUpComponents() {
 		// adds the top of the screen: game mode and such
 		gameModeOptions = new JComboBox<String>(MODE_OPTIONS);
 		gameModeOptions.setSelectedIndex(0);
@@ -1325,24 +1334,24 @@ public class UserPanel extends JPanel implements ActionListener, AI31Constants, 
 		}
 	}
 	@Override
-	public void mouseDragged(MouseEvent e) { // TODO Auto-generated method stub
+	public void mouseDragged(MouseEvent e) {
 	}
 	@Override
-	public void mouseMoved(MouseEvent e) { // TODO Auto-generated method stub
+	public void mouseMoved(MouseEvent e) {
 	}
 	@Override
-	public void mouseClicked(MouseEvent e) { // TODO Auto-generated method stub
+	public void mouseClicked(MouseEvent e) {
 	}
 	@Override
-	public void mousePressed(MouseEvent e) { // TODO Auto-generated method stub
+	public void mousePressed(MouseEvent e) {
 	}
 	@Override
-	public void mouseReleased(MouseEvent e) { // TODO Auto-generated method stub
+	public void mouseReleased(MouseEvent e) {
 	}
 	@Override
-	public void mouseEntered(MouseEvent e) { // TODO Auto-generated method stub
+	public void mouseEntered(MouseEvent e) {
 	}
 	@Override
-	public void mouseExited(MouseEvent e) { // TODO Auto-generated method stub
+	public void mouseExited(MouseEvent e) {
 	}
 }

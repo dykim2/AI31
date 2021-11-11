@@ -9,7 +9,7 @@ import javax.swing.JOptionPane;
 //this class is a base to all playing card games and all methods that throw an exception throw a PlayingCardException
 /**
  * A playing card class. This class can be used for any game, any program that needs cards. There are a lot of tools in the
- * program to assist playing a variety of different games.
+ * program to assist playing a variety of different games. Jokers will come once I find a usable joker image.
  * 
  * @author Dong-Yon Kim
  * @since 1.0
@@ -525,7 +525,7 @@ public class PlayingCard {// this assumes the running of one game at a time, not
 	/**
 	 * Creates an array of the standard 52 playing cards.
 	 * 
-	 * @return
+	 * @return an array of size 52 containing all cards from 2 to ace
 	 */
 	public static final PlayingCard[] buildAllCards() {
 		PlayingCard[] allCards = new PlayingCard[52];

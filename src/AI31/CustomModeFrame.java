@@ -1709,29 +1709,27 @@ public class CustomModeFrame extends JFrame implements ActionListener, AI31Const
 		return nums;
 	}
 	/**
-	 * Attempts to find an object and returns true if successful.
+	 * Attempts to find an object of type T in an array and returns true if successful.
+	 * @param <T> the class of the objects to check
 	 * 
-	 * @param stuff
-	 *            - the array you want to check
-	 * @param find
-	 *            - the object you want to find
+	 * @param stuff the array you want to check
+	 * @param find the object you want to find
 	 * @return true if the object is found, false if the object is not found
 	 */
-	public boolean find(Object[] stuff, Object find) {
-		for (Object s : stuff) { if (s.equals(find)) { return true; } }
+	public <T> boolean find(T[] stuff, T find) {
+		for (T s : stuff) { if (s.equals(find)) { return true; } }
 		return false;
 	}
 	/**
-	 * Attempts to find an object and returns true if successful.
+	 * Attempts to find an object of type T  in an array list and returns true if successful.
 	 * 
-	 * @param stuff
-	 *            - the ArrayList you want to check
-	 * @param find
-	 *            - the object you want to find
+	 * @param <T> the class of the objects to check
+	 * @param stuff the ArrayList you want to check
+	 * @param find the object you want to find
 	 * @return true if the object is found, false if the object is not found
 	 */
-	public boolean find(ArrayList stuff, Object find) {
-		for (Object s : stuff) { if (s.equals(find)) { return true; } }
+	public <T> boolean find(ArrayList<T> stuff, T find) {
+		for (T s : stuff) { if (s.equals(find)) { return true; } }
 		return false;
 	}
 	@Override
@@ -1746,22 +1744,18 @@ public class CustomModeFrame extends JFrame implements ActionListener, AI31Const
 	}
 	@Override
 	public void windowIconified(WindowEvent e) {
-		// TODO Auto-generated method stub
 
 	}
 	@Override
 	public void windowDeiconified(WindowEvent e) {
-		// TODO Auto-generated method stub
 
 	}
 	@Override
 	public void windowActivated(WindowEvent e) {
-		// TODO Auto-generated method stub
 
 	}
 	@Override
 	public void windowDeactivated(WindowEvent e) {
-		// TODO Auto-generated method stub
 
 	}
 }
