@@ -1,10 +1,21 @@
 package AI31;
-import baselineCustomClasses.GameErrorException;
+import baselineCustomClasses.GameException;
+/**
+ * The backbone of a game - the actual people who play the game, not just robots.
+ * @author Dong-Yon Kim
+ *
+ */
 public class Human extends Player {
+  /**
+   * Creates a new human with the given name in the given user interface.
+   * @param name the name of the human
+   * @param u the user interface the human belongs to
+   */
 	public Human(String name, UserInterface u){
 		super(u);
 		setName(name);
 	}
+	@Override
 	public int[] takeTurn() {
 		getUserInterface().getPanel().updateSpecificPlayerHand();
 		final Object[] options = {"SWAP", "SWAP 3 AND PASS", "PASS"};
@@ -23,12 +34,12 @@ public class Human extends Player {
 						"Choose a card to get rid of...");
 				value[1] = UserInterface.displayOptions("Which card from the middle do you want (1, 2, or 3)?", cardChoices,
 						"Choose a card you want from the middle...");
-				if(value[0]<0){throw new GameErrorException(value[0]+" is an invalid card index to remove from your hand.", "C4417");}
-				else if(value[1]<0){throw new GameErrorException(value[1]+" is an invalid card index to request from the mid.", "C4782");}
+				if(value[0]<0){throw new GameException(value[0]+" is an invalid card index to remove from your hand.", "C4417");}
+				else if(value[1]<0){throw new GameException(value[1]+" is an invalid card index to request from the mid.", "C4782");}
 				else{met=true; value[1]++; value[0]++;}
 				if(met){return value;}
 			}
-			catch(GameErrorException e){UserInterface.displayException(e, 5); UserInterface.displayError("Please enter an appropiate card index."); return takeTurn();}
+			catch(GameException e){UserInterface.displayException(e, 5); UserInterface.displayError("Please enter an appropiate card index."); return takeTurn();}
 			catch(NumberFormatException e){UserInterface.displayException(e, 5); return takeTurn();}
 			return value;
 			//the card number you want to return
@@ -46,15 +57,16 @@ public class Human extends Player {
 			//again, final turn
 		}
 		else if(decision == -1) {
-			try{throw new GameErrorException("Please do not close out the window...", "B5445");}
-			catch(GameErrorException e) {UserInterface.displayException(e, 5);}
+			try{throw new GameException("Please do not close out the window...", "B5445");}
+			catch(GameException e) {UserInterface.displayException(e, 5);}
 		}
 		else {
-			try{throw new GameErrorException("This should not be a choice.","K0645");}
-			catch(GameErrorException e) {UserInterface.displayException(e, 5);}
+			try{throw new GameException("This should not be a choice.","K0645");}
+			catch(GameException e) {UserInterface.displayException(e, 5);}
 		}
 		return null;
 	}
+	@Override
 	public String toString(){
 		if(!getUserInterface().isMultiPlayer()) {return "My cards are: "+getHand().get(0)+" (1), "
 				+ ""+getHand().get(1)+" (2), and "+getHand().get(2)+" (3),\nSum: "+sumOfHand()+"\n";}

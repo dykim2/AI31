@@ -1,7 +1,7 @@
 package AI31;
 
 import java.util.ArrayList;
-import baselineCustomClasses.GameErrorException;
+import baselineCustomClasses.GameException;
 public class MiddleHand extends Player {
   /**
    * Creates a new Middle Hand in the given user interface. 
@@ -20,11 +20,12 @@ public class MiddleHand extends Player {
    * @param a the array list of cards to add
    * @param u the user interface this middle hand is part of
    */
-  public MiddleHand(ArrayList<Card31> a, UserInterface u){this(u); addCard(a.get(0)); addCard(a.get(1)); addCard(a.get(2));}
+  public MiddleHand(ArrayList<Card31> a, UserInterface u){
+	  this(u); try{ addCard(a.get(0)); addCard(a.get(1)); addCard(a.get(2));} catch(GameException e) {UserInterface.displayError(e);}}
   @Override
   public int[] takeTurn(){
-    try{throw new GameErrorException("The middle should not be able to take a turn.", "Z0134");}
-    catch(GameErrorException e){UserInterface.displayException(e, 5); return null;}
+    try{throw new GameException("The middle should not be able to take a turn.", "Z0134");}
+    catch(GameException e){UserInterface.displayException(e, 5); return null;}
   }
   @Override
   public String toString(){

@@ -3,7 +3,6 @@
  */
 package AI31;
 import java.awt.BorderLayout;
-import java.awt.Container;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
@@ -14,11 +13,18 @@ import java.awt.Image;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
+
 import java.io.IOException;
+
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.Iterator;
+
 import javax.imageio.ImageIO;
+
 import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
 import javax.swing.ImageIcon;
@@ -26,6 +32,9 @@ import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
@@ -33,23 +42,25 @@ import javax.swing.JSlider;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
+
 import baselineCustomClasses.GUISetUpException;
-import baselineCustomClasses.GameErrorException;
+import baselineCustomClasses.GameException;
 /**
- * @author dykim
- * This panel is the base of the components. It takes care of updating each component with the numbers nescessary for the component.
+ * @author dykim This panel is the base of the components. It takes care of updating each component with the numbers
+ *         necessary for the component.
+ * @version 10.4
  */
-public class UserPanel extends JPanel implements ActionListener, AI31Constants{
+public class UserPanel extends JPanel implements ActionListener, AI31Constants, MouseListener, MouseMotionListener {
 	/**
 	 * @see AI31.UserInterface#serialVersionUID
 	 */
 	private static final long serialVersionUID = 2L;
-	//this will be the new framework for the GUI
+	// this will be the new framework for the GUI
 	/**
 	 * Some miscellaneous number that is used to display player information.
 	 */
 	private int count;
-	/*VVVVVVVVVV Components for the game GUI VVVVVVVVVV*/
+	/* VVVVVVVVVV Components for the game GUI VVVVVVVVVV */
 	/**
 	 * The Image of the back of the cards
 	 */
@@ -59,25 +70,25 @@ public class UserPanel extends JPanel implements ActionListener, AI31Constants{
 	 */
 	private UserInterface userInterface;
 	/**
-	 * Since the timer actions come here (to the panel), what action should be taken?
-	 * The timer counter determines the action to take.
+	 * Since the timer actions come here (to the panel), what action should be taken? The timer counter determines the action
+	 * to take.
 	 */
 	private int timerCounter = -1;
 	/**
 	 * The size of all JTextFields in the first page. This is so that when I add them, they don't auto shrink to a tiny size.
 	 */
-	protected static final Dimension LABEL_SIZE = new Dimension(600,25);
+	protected static final Dimension LABEL_SIZE = new Dimension(600, 25);
 	/**
 	 * The size of some of the smaller components.
 	 */
-	protected static final Dimension SMALL_LABEL_SIZE = new Dimension(300,25);
+	protected static final Dimension SMALL_LABEL_SIZE = new Dimension(300, 25);
 	/**
 	 * Some random Insets dimension. It doesn't do anything at all - its there for the sake of being there.
 	 */
-	protected static final Insets LABEL_INSETS = new Insets(0,0,0,0);
+	protected static final Insets LABEL_INSETS = new Insets(0, 0, 0, 0);
 	/**
-	 * <html>
-	 * The nonexistent button used for starting the turns after the dealer's turn. Removed becuase it was unneeded.
+	 * <html> The nonexistent button used for starting the turns after the dealer's turn. Removed becuase it was unneeded.
+	 * 
 	 * @deprecated Do not use this button. <br>
 	 * 
 	 */
@@ -107,7 +118,7 @@ public class UserPanel extends JPanel implements ActionListener, AI31Constants{
 	 */
 	private JButton startGameButton;
 	/**
-	 * The "Show another player's cards" button that only works with 
+	 * The "Show another player's cards" button that only works with
 	 */
 	private JButton showPreviousButton;
 	/**
@@ -249,7 +260,7 @@ public class UserPanel extends JPanel implements ActionListener, AI31Constants{
 	/**
 	 * The speed box at the bottom that is used to set the time.
 	 */
-	private JComboBox speedBox;//length of the delay
+	private JComboBox speedBox;// length of the delay
 	/**
 	 * The slider at the top used to set the number of lives per player.
 	 */
@@ -279,6 +290,26 @@ public class UserPanel extends JPanel implements ActionListener, AI31Constants{
 	 */
 	private JComboBox<String> cardBackOptionsBox;
 	/**
+	 * The future menu bar, to simplify the bottom buttons.
+	 */
+	private JMenuBar menuBar;
+	/**
+	 * The first menu, containing information components.
+	 */
+	private JMenu infoMenu;
+	/**
+	 * The help menu item.
+	 */
+	private JMenuItem helpItem;
+	/**
+	 * The pause menu item.
+	 */
+	private JMenuItem pauseItem;
+	/**
+	 * The quit menu item. Replaces the quit buttn, which I will soon deprecate. Once it is deprecated I will remove it.
+	 */
+	private JMenuItem quitItem;
+	/**
 	 * Just some random counter.
 	 */
 	private int counter;
@@ -291,27 +322,27 @@ public class UserPanel extends JPanel implements ActionListener, AI31Constants{
 	 */
 	protected boolean gameOver = false;
 	/**
-	 * Timer options - how fast do you want the game to go? Can be customized to your pleasure. 
+	 * Timer options - how fast do you want the game to go? Can be customized to your pleasure.
 	 */
-	private static final String[] TIMER_OPTIONS = {"Choose the speed of the game:", "0 Seconds", "0.01 Seconds", "1 Second", 
+	private static final String[] TIMER_OPTIONS = {"Choose the speed of the game:", "0 Seconds", "0.01 Seconds", "1 Second",
 			"2 Seconds", "3 Seconds", "4 Seconds", "5 Seconds", "Choose your own timer..."};
 	/**
-	 * The display options - do you want there to be pop-ups for lives lost, eliminations, both, or neither?
-	 * It will remain in the chat no matter what way you choose.
+	 * The display options - do you want there to be pop-ups for lives lost, eliminations, both, or neither? It will remain
+	 * in the chat no matter what way you choose.
 	 */
 	private static final String[] DISPLAY_OPTIONS = {"Choose which dialog boxes you want:", "No lives nor eliminations",
 			"Eliminations but no lives", "Lives but no eliminations", "Lives and eliminations"};
 	/**
-	 * Gamemode options. There are four main (not including default mode) options, which include the following:
-	 * 1: Competition (you vs some number of AI's)
-	 * 2: Friendly (you vs other people on the same machine - no AI players)
-	 * 3: Combination (you and other local players vs AI's)
-	 * 4: Custom - you can change most of the bonus settings here!
+	 * Gamemode options. There are four main (not including default mode) options, which include the following: 1:
+	 * Competition (you vs some number of AI's) 2: Friendly (you vs other people on the same machine - no AI players) 3:
+	 * Combination (you and other local players vs AI's) 4: Custom - you can change most of the bonus settings here!
 	 */
-	private static final String[] MODE_OPTIONS = {"Choose the game mode:", "1: Competition (facing AIs)", "2: Friendly (facing local players)",
-			"3: Combination (facing both local and AI players)", "4: Custom (choose from a range of different settings)"};
+	private static final String[] MODE_OPTIONS = {"Choose the game mode:", "1: Competition (facing AIs)",
+			"2: Friendly (facing local players)", "3: Combination (facing both local and AI players)",
+			"4: Custom (choose from a range of different settings)"};
 	/**
-	 * The options for the colors of the back of the cards. Currently, there are ten options, all shown in the bottom combo box.
+	 * The options for the colors of the back of the cards. Currently, there are ten options, all shown in the bottom combo
+	 * box.
 	 */
 	private static final String[] CARD_BACK_OPTIONS = {"Choose the card back color: ", "Blue", "Yellow", "Red", "Green",
 			"Gray", "Purple", "Orange", "Brown", "Aqua", "Black"};
@@ -340,11 +371,14 @@ public class UserPanel extends JPanel implements ActionListener, AI31Constants{
 	 */
 	public static final int NO_LIVES_NOR_ELIMINATIONS = -1;
 	/**
-	 * Stores the display settings for lives and elimninations.
+	 * Stores the display settings for lives and eliminations.
 	 */
 	private static int showEliminations = LIVES_AND_ELIMINATIONS;
+	/**
+	 * Whether the game is paused or running.
+	 */
 	private boolean paused = false;
-	/*^^^^^^^^^^ Components for the game GUI ^^^^^^^^^^*/
+	/* ^^^^^^^^^^ Components for the game GUI ^^^^^^^^^^ */
 	/**
 	 * The list of players for the game.
 	 */
@@ -359,24 +393,45 @@ public class UserPanel extends JPanel implements ActionListener, AI31Constants{
 	protected boolean firstCustomSelected = true;
 	/**
 	 * Sets up the UserPanel (most of the components of the UserInterface GUI)
+	 * 
 	 * @param u - the UserInterface this panel belongs with
 	 */
-	public UserPanel(UserInterface u) {super(); userInterface = u; try{setUp();}catch(GUISetUpException e) {UserInterface.displayException(e, 1);}}
-	public void setUp() throws GUISetUpException{//this will run the exact same set up as the main function
+	public UserPanel(UserInterface u) {
+		super();
+		userInterface = u;
 		try {
-			try {backImage = ImageIO.read(getClass().getResource("/Pictures/"+selectedBack+"_back.png")).getScaledInstance(-2, 100, Image.SCALE_SMOOTH);}
-			catch(IOException e) {UserInterface.displayException(e, 1);}
+			setUp();
+		} catch (GUISetUpException e) {
+			UserInterface.displayException(e, 1);
+		}
+	}
+	/**
+	 * Runs the set up of the game.
+	 * 
+	 * @throws GUISetUpException
+	 */
+	public void setUp() throws GUISetUpException {// this will run the exact same set up as the main function
+		try {
+			try {
+				backImage = ImageIO.read(getClass().getResource("/Pictures/" + selectedBack + "_back.png"))
+						.getScaledInstance(-2, 100, Image.SCALE_SMOOTH);
+			} catch (IOException e) {
+				UserInterface.displayException(e, 1);
+			}
 			setLayout(new BorderLayout());
-			playArea = new JTextArea("Welcome to 31!\nIf you want a simple game, press the 'Start Default Game' button and nothing else.\n", 50 ,50);
+			playArea = new JTextArea(
+					"Welcome to 31!\nIf you want a simple game, press the 'Start Default Game' button and nothing else.\n",
+					50, 50);
 			playArea.setEditable(false);
 			rulesArea = new JTextArea("31 Game Rules:\n");
 			rulesArea.setEditable(false);
-			rulesArea.setPreferredSize(new Dimension(300,600));
+			rulesArea.setPreferredSize(new Dimension(300, 600));
 			rulesArea.append("31 is a game of swapping cards to\ntry and gain the highest possible hand.\n\n"
 					+ "Your goal is to try and gain the highest\npossible sum in your hand.\n"
 					+ "The sum of your hand is equal to the highest\nsum of cards of one suit in your hand.\n"
 					+ "3 of a number is worth 30.5 points, 3 aces\nare worth 32 points, and 6-7-8 of a suit\n"
-					+ "in 10+ player games is worth 21.5 points.\n\n"//why 21.5? worse than 6-7-9 (22) but better than face-A-another suit (21)
+					+ "in 10+ player games is worth 21.5 points.\n\n"// why 21.5? worse than 6-7-9 (22) but better than
+																		// face-A-another suit (21)
 					+ "Tens and face cards are worth 10 and aces 11,\nrespectively. Other cards carry their pip value.\n\n"
 					+ "Each turn, you can either swap a card with\nanother card, swap all three cards from the middle\n"
 					+ "with all three of your cards and pass, or pass.\nPassing makes this your last turn for the round.\n"
@@ -387,8 +442,10 @@ public class UserPanel extends JPanel implements ActionListener, AI31Constants{
 					+ "the next round..\nLook above for your cards and\nbelow for the middle cards. Enjoy!\n\n"
 					+ "Made by Dong-Yon Kim. I do not claim to own\nthe card game this is based off of. However,\n"
 					+ "the GUI and strategy/mechanics were built\nby me. I hope you enjoy this game I made.");
-			scrollPane = new JScrollPane(playArea, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
-			rulesScrollPane = new JScrollPane(rulesArea, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
+			scrollPane = new JScrollPane(playArea, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
+					JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
+			rulesScrollPane = new JScrollPane(rulesArea, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
+					JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
 
 			scrollPane.setMinimumSize(new Dimension(600, 450));
 			ArrayList<JTextField> components = new ArrayList<JTextField>();
@@ -405,16 +462,18 @@ public class UserPanel extends JPanel implements ActionListener, AI31Constants{
 			speedLabel.setMaximumSize(SMALL_LABEL_SIZE);
 			speedLabel.setPreferredSize(SMALL_LABEL_SIZE);
 
-			//new GridBagConstraints( 0, 0, 1, 1, 0.5, 0.5, GridBagConstraints.CENTER, GridBagConstraints.NONE,  new Insets( 0, 0, 0, 0 ), 0, 0 );
+			// new GridBagConstraints( 0, 0, 1, 1, 0.5, 0.5, GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(
+			// 0, 0, 0, 0 ), 0, 0 );
 
 			infoArea = new JTextArea("Type anything here:");
-			infoScrollPane = new JScrollPane(infoArea, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
+			infoScrollPane = new JScrollPane(infoArea, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
+					JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
 
 			otherDisplayLabel = new JLabel("None", SwingConstants.CENTER);
 			otherDisplayLabel.setMaximumSize(SMALL_LABEL_SIZE);
 			otherDisplayLabel.setPreferredSize(SMALL_LABEL_SIZE);
 
-			for(JTextField comp : components) {comp.setMaximumSize(LABEL_SIZE); comp.setEditable(false);}
+			for (JTextField comp : components) { comp.setMaximumSize(LABEL_SIZE); comp.setEditable(false); }
 			addCardComponents();
 			add(centerPanel, BorderLayout.CENTER);
 			speedBox = new JComboBox(TIMER_OPTIONS);
@@ -463,7 +522,7 @@ public class UserPanel extends JPanel implements ActionListener, AI31Constants{
 			cons.insets = LABEL_INSETS;
 			cons.weightx = 0.5;
 			cons.weighty = 1.0;
-			//cons.ipady = 450;
+			// cons.ipady = 450;
 			cons.fill = GridBagConstraints.BOTH;
 			addSetUpComponents();
 			rightPanel = new JPanel();
@@ -498,12 +557,44 @@ public class UserPanel extends JPanel implements ActionListener, AI31Constants{
 			add(leftPanel, BorderLayout.WEST);
 			leftPanel.setMaximumSize(leftPanel.getPreferredSize());
 			add(bottomPanel, BorderLayout.SOUTH);
+		} catch (Exception e) {
+			UserInterface.displayException(e, 1);
+			throw new GUISetUpException("Something went wrong creating the components of the GUI", "B1953");
 		}
-		catch(Exception e) {UserInterface.displayException(e, 1); throw new GUISetUpException("Something went wrong creating the components of the GUI", "B1953");}
 
 	}
-	protected void addCardComponents() {
-		//adds the cards you see
+	/**
+	 * Creates a menu bar for the user interface, allowing for separate display of instructions and more.
+	 */
+	public void createMenuBar() throws GUISetUpException {
+		menuBar = new JMenuBar();
+		infoMenu = new JMenu("Help");
+		menuBar.add(infoMenu);
+		helpItem = new JMenuItem("Rules");
+		helpItem.addActionListener(this);
+		pauseItem = new JMenuItem("Pause");
+		pauseItem.addActionListener(this);
+
+		// one to two extra menus and
+		//pull whats from the bottom of the screen
+
+		// the menus I want to create are going to be the ones in the bottom panel, eventually I will be able to drag and drop
+		// at least I hope to be able to drag 'n' drop soon
+	}
+	/**
+	 * Creates the future paneling that will be used to drag and drop cards, moving the text version of the game away into a
+	 * more colorful, unique one. Steps: 1. Overhaul the current UI - try to maybe build a square, with players around the
+	 * edges of where the text box is now 2. Implement animations - the cards move to the player (I could do this by getting
+	 * the coordinates and moving them, or can I? I don't know since they are bound to panels, but I can give it my best shot
+	 */
+	public void createLayeredPaneling() {
+
+	}
+	/**
+	 * Adds the card labels to the game.
+	 */
+	private void addCardComponents() {
+		// adds the cards you see
 		playerImage1 = new JLabel(new ImageIcon(backImage));
 		playerImage2 = new JLabel(new ImageIcon(backImage));
 		playerImage3 = new JLabel(new ImageIcon(backImage));
@@ -516,9 +607,9 @@ public class UserPanel extends JPanel implements ActionListener, AI31Constants{
 		playerImagePanel = new JPanel();
 		cpuImagePanel = new JPanel();
 		midImagePanel = new JPanel();
-		playerImagePanel.setLayout(new FlowLayout(FlowLayout.CENTER, 10 , 10));
-		cpuImagePanel.setLayout(new FlowLayout(FlowLayout.CENTER, 10 , 10));
-		midImagePanel.setLayout(new FlowLayout(FlowLayout.CENTER, 10 , 10));
+		playerImagePanel.setLayout(new FlowLayout(FlowLayout.CENTER, 10, 10));
+		cpuImagePanel.setLayout(new FlowLayout(FlowLayout.CENTER, 10, 10));
+		midImagePanel.setLayout(new FlowLayout(FlowLayout.CENTER, 10, 10));
 		playerImagePanel.add(playerImage1);
 		playerImagePanel.add(playerImage2);
 		playerImagePanel.add(playerImage3);
@@ -536,10 +627,14 @@ public class UserPanel extends JPanel implements ActionListener, AI31Constants{
 			public void actionPerformed(ActionEvent e) {
 				try {
 					ArrayList<Player> newCopy = new ArrayList<Player>(players);
-					for(Iterator<Player> playerIt = newCopy.iterator(); playerIt.hasNext();){if(playerIt.next() == null){playerIt.remove();}}
-					String[] names = new String[newCopy.size()];//add one later, for now remove the middle
+					for (Iterator<Player> playerIt = newCopy.iterator(); playerIt.hasNext();) {
+						if (playerIt.next() == null) { playerIt.remove(); }
+					}
+					String[] names = new String[newCopy.size()];// add one later, for now remove the middle
 					names[0] = "Choose a player name: ";
-					for(int i=0; i<newCopy.size()-1; i++) {if(newCopy.get(i)!=null) {names[i+1] = newCopy.get(i).getName();}}
+					for (int i = 0; i < newCopy.size() - 1; i++) {
+						if (newCopy.get(i) != null) { names[i + 1] = newCopy.get(i).getName(); }
+					}
 					JComboBox choiceBox = new JComboBox(names);
 					choiceBox.setSelectedIndex(0);
 					choiceBox.setEditable(false);
@@ -550,21 +645,25 @@ public class UserPanel extends JPanel implements ActionListener, AI31Constants{
 					list.add(cpuImage1);
 					list.add(cpuImage2);
 					list.add(cpuImage3);
-					for(int i=0; i<newCopy.size(); i++) {
-						if(((String)choiceBox.getSelectedItem()).equals(newCopy.get(i).getName())) {
-							addText("You are currently seeing "+newCopy.get(i).getName()+"'s cards.\n");
-							cpuCards.setText(newCopy.get(i).getName()+"'s cards:");
-							sumOfCPU.setText("Sum: "+newCopy.get(i).sumOfHand());
-							for(int k=0; k<3; k++) {list.get(k).setIcon(new ImageIcon(newCopy.get(i).getCard(k).getImage()));}
-							//if(newCopy.get(i).getName().equals("THE MIDDLE HAND")) {cpuImagePanel.remove(choiceBox); cpuImagePanel.add(choiceBox);
-							//cpuImagePanel.revalidate(); cpuImagePanel.repaint();};
+					for (int i = 0; i < newCopy.size(); i++) {
+						if (((String) choiceBox.getSelectedItem()).equals(newCopy.get(i).getName())) {
+							addText("You are currently seeing " + newCopy.get(i).getName() + "'s cards.\n");
+							cpuCards.setText(newCopy.get(i).getName() + "'s cards:");
+							sumOfCPU.setText("Sum: " + newCopy.get(i).sumOfHand());
+							for (int k = 0; k < 3; k++) {
+								list.get(k).setIcon(new ImageIcon(newCopy.get(i).getCard(k).getImage()));
+							}
+							// if(newCopy.get(i).getName().equals("THE MIDDLE HAND")) {cpuImagePanel.remove(choiceBox);
+							// cpuImagePanel.add(choiceBox);
+							// cpuImagePanel.revalidate(); cpuImagePanel.repaint();};
 							break;
 						}
 					}
 					choiceBox.setSelectedIndex(0);
 
+				} catch (Exception ex) {
+					UserInterface.displayException(ex, 1);
 				}
-				catch(Exception ex){UserInterface.displayException(ex, 1);}
 			}
 		});
 		cpuImagePanel.add(showPreviousButton);
@@ -585,16 +684,20 @@ public class UserPanel extends JPanel implements ActionListener, AI31Constants{
 		c.gridy = 1;
 		centerPanel.add(cpuImagePanel, c);
 	}
-	protected void addSetUpComponents() {
-		//adds the top of the screen: game mode and such
+	/**
+	 * Creates the set up components.
+	 */
+	@SuppressWarnings("rawtypes")
+	private void addSetUpComponents() {
+		// adds the top of the screen: game mode and such
 		gameModeOptions = new JComboBox<String>(MODE_OPTIONS);
 		gameModeOptions.setSelectedIndex(0);
 		gameModeOptions.setEditable(false);
 		gameModeOptions.addActionListener(this);
 		Hashtable playerCountTable = new Hashtable();
 		Hashtable lifeCountTable = new Hashtable();
-		for(int i=2; i<12; i++) {playerCountTable.put(new Integer(i), new JLabel(""+i));}
-		for(int i=1; i<16; i++) {lifeCountTable.put(new Integer(i), new JLabel(""+i));}
+		for (int i = 2; i < 12; i++) { playerCountTable.put(new Integer(i), new JLabel("" + i)); }
+		for (int i = 1; i < 16; i++) { lifeCountTable.put(new Integer(i), new JLabel("" + i)); }
 		playerCountSlider = new JSlider(JSlider.HORIZONTAL, 2, 11, 4);
 		playerCountSlider.setMajorTickSpacing(1);
 		playerCountSlider.setPaintTicks(true);
@@ -621,16 +724,16 @@ public class UserPanel extends JPanel implements ActionListener, AI31Constants{
 		c.gridy = 0;
 		addComponent(playerLabel, c, topPanel);
 		c.gridx = 1;
-		//c.gridwidth = 2;
+		// c.gridwidth = 2;
 		addComponent(playerCountSlider, c, topPanel);
 		c.gridwidth = 1;
 		c.gridx = 0;
 		c.gridy = 1;
 		addComponent(lifeLabel, c, topPanel);
 		c.gridx = 1;
-		//c.gridwidth = 2;
+		// c.gridwidth = 2;
 		addComponent(lifeCountSlider, c, topPanel);
-		JPanel sparePanel = new JPanel(new GridLayout(0,1));
+		JPanel sparePanel = new JPanel(new GridLayout(0, 1));
 		c.gridx = 2;
 		c.gridy = 1;
 		sparePanel.add(gameModeOptions);
@@ -640,11 +743,17 @@ public class UserPanel extends JPanel implements ActionListener, AI31Constants{
 		addRadioButtons();
 		c.gridx = 2;
 		add(topPanel, BorderLayout.NORTH);
-		//playerLabel.setMaximumSize(playerLabel.getPreferredSize());
-		//startGameButton.setMaximumSize(startGameButton.getPreferredSize());
-		//lifeLabel.setMaximumSize(lifeLabel.getPreferredSize());
+		// playerLabel.setMaximumSize(playerLabel.getPreferredSize());
+		// startGameButton.setMaximumSize(startGameButton.getPreferredSize());
+		// lifeLabel.setMaximumSize(lifeLabel.getPreferredSize());
 	}
-	protected void addComponent(JComponent comp, GridBagConstraints c, JPanel p) {if(c!=null) {p.add(comp, c);}else{p.add(comp);}}
+	private void addComponent(JComponent comp, GridBagConstraints c, JPanel p) {
+		if (c != null) {
+			p.add(comp, c);
+		} else {
+			p.add(comp);
+		}
+	}
 	protected void addRadioButtons() {
 		GridBagConstraints c = new GridBagConstraints();
 		c.weightx = 0.5;
@@ -661,7 +770,7 @@ public class UserPanel extends JPanel implements ActionListener, AI31Constants{
 		ButtonGroup group = new ButtonGroup();
 		group.add(multiPlayerOff);
 		group.add(multiPlayerOn);
-		radioButtonPanel = new JPanel(new GridLayout(1,0));
+		radioButtonPanel = new JPanel(new GridLayout(1, 0));
 		JLabel multi = new JLabel("Multiplayer:");
 		multi.setEnabled(false);
 		radioButtonPanel.add(multi);
@@ -683,9 +792,10 @@ public class UserPanel extends JPanel implements ActionListener, AI31Constants{
 	protected void swapSlidersOut() {
 		changeStatus(-6, false);
 		playerLabel.setText("Choose the number of human players:");
-		UserInterface.displayInfo("Choose the number of human players using the above (replaced) slider!", "Human player count needed!");
+		UserInterface.displayInfo("Choose the number of human players using the above (replaced) slider!",
+				"Human player count needed!");
 		Hashtable humanPlayerTable = new Hashtable();
-		for(int i=1; i<=playerCountSlider.getValue(); i++) {humanPlayerTable.put(new Integer(i), new JLabel(""+i));}
+		for (int i = 1; i <= playerCountSlider.getValue(); i++) { humanPlayerTable.put(new Integer(i), new JLabel("" + i)); }
 		topPanel.remove(playerCountSlider);
 		humanCountSlider = new JSlider(JSlider.HORIZONTAL, 1, playerCountSlider.getValue(), 2);
 		humanCountSlider.setLabelTable(humanPlayerTable);
@@ -709,77 +819,111 @@ public class UserPanel extends JPanel implements ActionListener, AI31Constants{
 	}
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		//switch statement or just if conditions?
-		//if conditions seem to be better
-		//the following five conditions allow for using the buttons on the bottom without affecting the game in progress
-		if(e.getSource() == clearButton) {userInterface.actionCount--;}
-		if(e.getSource() == speedBox) {userInterface.actionCount--;}
-		if(e.getSource() == cardBackOptionsBox) {userInterface.actionCount--;}
-		if(e.getSource() == pauseButton) {userInterface.actionCount--;}
-		if(e.getSource() == displayLivesLostBox) {userInterface.actionCount--;}
+		// switch statement or just if conditions?
+		// if conditions seem to be better
+		// the following five conditions allow for using the buttons on the bottom without affecting the game in progress
+		if (e.getSource() == clearButton) { userInterface.actionCount--; }
+		if (e.getSource() == speedBox) { userInterface.actionCount--; }
+		if (e.getSource() == cardBackOptionsBox) { userInterface.actionCount--; }
+		if (e.getSource() == pauseButton) { userInterface.actionCount--; }
+		if (e.getSource() == displayLivesLostBox) { userInterface.actionCount--; }
 
 		userInterface.actionCount++;
-		if(userInterface.actionCount == 1) {startGameButton.setText("Start Game"); topPanel.revalidate(); topPanel.repaint();}
+		if (userInterface.actionCount == 1) {
+			startGameButton.setText("Start Game");
+			topPanel.revalidate();
+			topPanel.repaint();
+		}
 		try {
-			if(e.getSource() == startGameButton) {startGameAction();}
-			else if(e.getSource() == nextTurnButton) {userInterface.doAITurns();}
-			else if(e.getSource() == pauseButton) {paused = !paused; pauseAction();}
-			else if(e.getSource() == finishRoundButton) {finishRound();}
-			else if(e.getSource() == startRoundButton) {startRoundAction();}
-			else if(e.getSource() == userInterface.getRepeatingTimer()) {repeatingTimerAction();}
-			else if(e.getSource() == userInterface.getNonRepeatingTimer()) {nonRepeatingTimerAction();}
-			else if(e.getSource() == quitButton) {System.exit(0);}
-			else if(e.getSource() == pauseButton) {
+			if (e.getSource() == startGameButton) {
+				startGameAction();
+			} else if (e.getSource() == nextTurnButton) {
+				userInterface.doAITurns();
+			} else if (e.getSource() == pauseButton) {
+				paused = !paused;
+				pauseAction();
+			} else if (e.getSource() == finishRoundButton) {
+				finishRound();
+			} else if (e.getSource() == startRoundButton) {
+				startRoundAction();
+			} else if (e.getSource() == userInterface.getRepeatingTimer()) {
+				repeatingTimerAction();
+			} else if (e.getSource() == userInterface.getNonRepeatingTimer()) {
+				nonRepeatingTimerAction();
+			} else if (e.getSource() == quitButton) {
+				System.exit(0);
+			} else if (e.getSource() == pauseButton) {
 				System.out.println("pause?");
-				if(pauseButton.getText().equals("Pause")) {
-					pauseButton.setText("Resume"); 
+				if (pauseButton.getText().equals("Pause")) {
+					pauseButton.setText("Resume");
 					try {
-						Thread.sleep(3000);//wait 3 second before continuing
-					}
-					catch(InterruptedException exc) {
+						Thread.sleep(3000);// wait 3 second before continuing
+					} catch (InterruptedException exc) {
 						UserInterface.displayError("Program interrupted.");
 					}
+				} else {
+					pauseButton.setText("Pause");
 				}
-				else {pauseButton.setText("Pause"); }
-			}
-			else if(e.getSource() == clearButton) {playArea.setText("");}
-			else if(e.getSource() == speedBox) {speedBoxAction();}
-			else if(e.getSource() == displayLivesLostBox) {livesLostBoxAction();}
-			else if(e.getSource() == cardBackOptionsBox) {cardBackBoxAction();}
-			else if(e.getSource() == gameModeOptions) {updateGameMode();}
+			} else if (e.getSource() == clearButton) {
+				playArea.setText("");
+			} else if (e.getSource() == speedBox) {
+				speedBoxAction();
+			} else if (e.getSource() == displayLivesLostBox) {
+				livesLostBoxAction();
+			} else if (e.getSource() == cardBackOptionsBox) {
+				cardBackBoxAction();
+			} else if (e.getSource() == gameModeOptions) { updateGameMode(); }
+		} catch (Exception ex) {
+			UserInterface.displayException(ex, 1);
 		}
-		catch(Exception ex) {UserInterface.displayException(ex, 1);}
 
 	}
 	protected void startGameAction() {
-		if(userInterface.actionCount == 1) {userInterface.defaultGame = true; userInterface.setUpDefaultGame(); return;}//only set up changes
-		else {userInterface.defaultGame = false;}
+		if (userInterface.actionCount == 1) {
+			userInterface.defaultGame = true;
+			userInterface.setUpDefaultGame();
+			return;
+		} // only set up changes
+		else {
+			userInterface.defaultGame = false;
+		}
 		changeStatus(-6, false);
-		if(counter==0) {
-			if(priorIndex!=4) {
-				addText("You have decided to play with "+playerCountSlider.getValue()+" players.\n");
+		if (counter == 0) {
+			if (priorIndex != 4) {
+				addText("You have decided to play with " + playerCountSlider.getValue() + " players.\n");
 				userInterface.setPlayerCount(playerCountSlider.getValue());
 				userInterface.setLifeCount(lifeCountSlider.getValue());
 				lifeCountSlider.setEnabled(false);
 			}
-			if(priorIndex == 4) {
+			if (priorIndex == 4) {
 				playerCountSlider.setEnabled(false);
 				lifeCountSlider.setEnabled(false);
 				changeStatus(-6, false);
 				UserInterface.displayInfo(
 						"You can change a lot of different things in custom mode!\n"
 								+ "Note that the player and human counts can be changed to go beyond 11 players!\n"
-								+ "Note that you must press Enter for your selection to be saved.", "Custom mode has been selected!");
+								+ "Note that you must press Enter for your selection to be saved.",
+						"Custom mode has been selected!");
 				userInterface.setMode("custom");
 				userInterface.startCustom();
+			} else if (priorIndex == 3) {
+				userInterface.setMultiPlayer(true);
+				startGameButton.setText("Confirm");
+				counter++;
+				swapSlidersOut();
+			} else if (priorIndex == 2) {
+				userInterface.setMultiPlayer(true);
+				changeStatus(-5, false);
+				userInterface.startGame();
+			} else {
+				playerCountSlider.setEnabled(false);
+				userInterface.setMultiPlayer(false);
+				userInterface.setHumanCount(playerCountSlider.getValue());
+				changeStatus(-5, false);
+				userInterface.startGame();
 			}
-			else if(priorIndex == 3) {userInterface.setMultiPlayer(true); startGameButton.setText("Confirm"); counter++; swapSlidersOut();}
-			else if(priorIndex == 2) {userInterface.setMultiPlayer(true); changeStatus(-5, false); userInterface.startGame();}
-			else {playerCountSlider.setEnabled(false); userInterface.setMultiPlayer(false); 
-			userInterface.setHumanCount(playerCountSlider.getValue()); changeStatus(-5, false); userInterface.startGame();}
-		}
-		else {
-			addText("You have decided to play with "+humanCountSlider.getValue()+" human players.\n");
+		} else {
+			addText("You have decided to play with " + humanCountSlider.getValue() + " human players.\n");
 			userInterface.setHumanCount(humanCountSlider.getValue());
 			GridBagConstraints c = new GridBagConstraints();
 			c.weightx = 0.5;
@@ -817,99 +961,118 @@ public class UserPanel extends JPanel implements ActionListener, AI31Constants{
 			userInterface.resetHands();
 			changeStatus(-7, false);
 			midInfo.setText("Mid cards: ");;
-			updateCardLabels(0,-5);
+			updateCardLabels(0, -5);
 			cpuImage1.setIcon(new ImageIcon(backImage));
 			cpuImage2.setIcon(new ImageIcon(backImage));
 			cpuImage3.setIcon(new ImageIcon(backImage));
 			changeStatus(-1, false);
 			changeStatus(-2, false);
 			userInterface.deal();
+		} catch (GameException e1) {
+			UserInterface.displayException(e1, 1);
+		} catch (Exception e1) {
+			UserInterface.displayException(e1, 1);
 		}
-		catch(GameErrorException e1) {UserInterface.displayException(e1, 1);}
-		catch(Exception e1) {UserInterface.displayException(e1, 1);}
 	}
 	protected void repeatingTimerAction() {
-		if(timerCounter == -1) {
-			while(players.get(userInterface.getPlayerTurn()) == null) {userInterface.nextPlayer();}
-			//create a warning so that the player in turn can do their turn without showing the next player their cards
-			if(players.get(userInterface.getPlayerTurn())!=null && (players.get(userInterface.getPlayerTurn()).getClass().getName().equals("AI31.Human")
-					|| userInterface.getPlayerTurn() == 0) && userInterface.isMultiPlayer()) {
-				clearPlayerHand();}
-			if(players.get(userInterface.getPlayerTurn())!=null && players.get(userInterface.getPlayerTurn()).getClass().getName().equals("AI31.Human")
+		if (timerCounter == -1) {
+			while (players.get(userInterface.getPlayerTurn()) == null) { userInterface.nextPlayer(); }
+			// create a warning so that the player in turn can do their turn without showing the next player their cards
+			if (players.get(userInterface.getPlayerTurn()) != null
+					&& (players.get(userInterface.getPlayerTurn()).getClass().getName().equals("AI31.Human")
+							|| userInterface.getPlayerTurn() == 0)
 					&& userInterface.isMultiPlayer()) {
-				if(userInterface.playersAlive()){UserInterface.displayWarning("It is currently "+players.get(userInterface.getPlayerTurn()).getName()+" "
-						+ "("+userInterface.getPlayerTurn()+")'s turn.", "The player about to take their turn is a human.");
-				updateSpecificPlayerHand();}
+				clearPlayerHand();
 			}
-			if(userInterface.playersAlive()) {
-				try {userInterface.gameplay();}
-				catch (GameErrorException e1) {UserInterface.displayException(e1, 1);}
+			if (players.get(userInterface.getPlayerTurn()) != null
+					&& players.get(userInterface.getPlayerTurn()).getClass().getName().equals("AI31.Human")
+					&& userInterface.isMultiPlayer()) {
+				if (userInterface.playersAlive()) {
+					UserInterface.displayWarning(
+							"It is currently " + players.get(userInterface.getPlayerTurn()).getName() + " " + "("
+									+ userInterface.getPlayerTurn() + ")'s turn.",
+							"The player about to take their turn is a human.");
+					updateSpecificPlayerHand();
+				}
 			}
-			else {
+			if (userInterface.playersAlive()) {
+				try {
+					userInterface.gameplay();
+				} catch (GameException e1) {
+					UserInterface.displayException(e1, 1);
+				}
+			} else {
 				addText("\nAll player turns for the round are complete.\nPress the 'Finish Round' button to finish the round.\n\n");
 				changeStatus(-1, true);
 				changeStatus(-2, false);
 				changeStatus(-3, true);
 				changeStatus(-4, true);
 				userInterface.startOrEndTimer(false);
-				if(multiPlayerOn.isSelected()){clearPlayerHand();}
+				if (multiPlayerOn.isSelected()) { clearPlayerHand(); }
 				addPlayers();
 				playerCopy.clear();
 				playerCopy.addAll(players);
 			}
 		}
-		if(timerCounter == 3) {
+		if (timerCounter == 3) {
 			updateCardLabels(1, count);
-			if(players.get(count)!=null) {addText(players.get(count)+"\n");}
+			if (players.get(count) != null) { addText(players.get(count) + "\n"); }
 			count++;
-			if(count==players.size()-1) {
+			if (count == players.size() - 1) {
 				userInterface.startOrEndTimer(false);
 				userInterface.finishEndOfRound();
-				count=0;
+				count = 0;
 			}
 		}
 
 	}
 	/**
-	 * <html>
-	 * The action the nonRepeatingTimer takes. <br>
-	 * If timerCounter = 0: 
-	 * @see {@link AI31.UserInterface#dealAgain()}
-	 * <br>
-	 * If timerCounter = 2:
-	 * @see {@link AI31.UserInterface#doAITurns()}
-	 * </html>
+	 * <html> The action the nonRepeatingTimer takes. <br>
+	 * If timerCounter = 0:
+	 * 
+	 * @see {@link AI31.UserInterface#dealAgain()} <br>
+	 *      If timerCounter = 2:
+	 * @see {@link AI31.UserInterface#doAITurns()} </html>
 	 */
 	protected void nonRepeatingTimerAction() {
-		if(timerCounter == 0) {userInterface.dealAgain();}
-		else if(timerCounter == 2) {
-			//first turn is done - do turns for the AIs
+		if (timerCounter == 0) {
+			userInterface.dealAgain();
+		} else if (timerCounter == 2) {
+			// first turn is done - do turns for the AIs
 			userInterface.doAITurns();
 		}
 
 	}
 	/**
-	 * The result of clicking the box that says "Choose the speed of the game".
-	 * Speed can be a decimal. It does not have to be a whole number.
+	 * The result of clicking the box that says "Choose the speed of the game". Speed can be a decimal. It does not have to
+	 * be a whole number.
 	 */
 	protected void speedBoxAction() {
-		String selection = (String)speedBox.getSelectedItem();
-		if(selection.equals(TIMER_OPTIONS[0])) {}
-		else if(selection.equals(TIMER_OPTIONS[2])) {speed = 10;}
-		else if(selection.equals(TIMER_OPTIONS[1])) {speed = 0;}
-		else if(selection.equals(TIMER_OPTIONS[TIMER_OPTIONS.length-1])) {
-			while(true) {
+		String selection = (String) speedBox.getSelectedItem();
+		if (selection.equals(TIMER_OPTIONS[0])) {
+		} else if (selection.equals(TIMER_OPTIONS[2])) {
+			speed = 10;
+		} else if (selection.equals(TIMER_OPTIONS[1])) {
+			speed = 0;
+		} else if (selection.equals(TIMER_OPTIONS[TIMER_OPTIONS.length - 1])) {
+			while (true) {
 				try {
-					double quantity = Double.parseDouble(UserInterface.displayQuestion("Enter the delay, in seconds, between turns you want "
-							+ "(it can be a decimal).", "How fast would you like the game to go?"));
-					speed = (int)(quantity*1000);
+					double quantity = Double.parseDouble(UserInterface.displayQuestion(
+							"Enter the delay, in seconds, between turns you want " + "(it can be a decimal).",
+							"How fast would you like the game to go?"));
+					speed = (int) (quantity * 1000);
+				} catch (NumberFormatException ex) {
+					UserInterface.displayException(ex, 1);
+				} catch (NullPointerException ex) {
+					UserInterface.displayException(ex, 1);
 				}
-				catch(NumberFormatException ex) {UserInterface.displayException(ex, 1);}
-				catch(NullPointerException ex) {UserInterface.displayException(ex, 1);}
 				break;
 			}
+		} else {
+			for (int i = 3; i < TIMER_OPTIONS.length; i++) {
+				if (selection.equals(TIMER_OPTIONS[i])) { speed = (i - 2) * 1000; }
+			}
 		}
-		else {for(int i=3; i<TIMER_OPTIONS.length; i++) {if(selection.equals(TIMER_OPTIONS[i])) {speed = (i-2)*1000;}}}
 		userInterface.updateTimer(speed);
 		updateSpeed();
 		userInterface.updateNonRepeatTimer(speed);
@@ -917,154 +1080,195 @@ public class UserPanel extends JPanel implements ActionListener, AI31Constants{
 
 	}
 	protected void livesLostBoxAction() {
-		String selected = (String)displayLivesLostBox.getSelectedItem();
-		if(selected.equals(DISPLAY_OPTIONS[1])) {showEliminations = NO_LIVES_NOR_ELIMINATIONS;}
-		else if(selected.equals(DISPLAY_OPTIONS[2])) {showEliminations = NO_LIVES_AND_ELIMINATIONS;}
-		else if(selected.equals(DISPLAY_OPTIONS[3])) {showEliminations = LIVES_NOT_ELIMINATIONS;}
-		else if(selected.equals(DISPLAY_OPTIONS[4])) {showEliminations = LIVES_AND_ELIMINATIONS;}
-		else {}
+		String selected = (String) displayLivesLostBox.getSelectedItem();
+		if (selected.equals(DISPLAY_OPTIONS[1])) {
+			showEliminations = NO_LIVES_NOR_ELIMINATIONS;
+		} else if (selected.equals(DISPLAY_OPTIONS[2])) {
+			showEliminations = NO_LIVES_AND_ELIMINATIONS;
+		} else if (selected.equals(DISPLAY_OPTIONS[3])) {
+			showEliminations = LIVES_NOT_ELIMINATIONS;
+		} else if (selected.equals(DISPLAY_OPTIONS[4])) {
+			showEliminations = LIVES_AND_ELIMINATIONS;
+		} else {
+		}
 		displayLivesLostBox.setSelectedIndex(0);
 		updateDisplaySetting();
 	}
 	protected void cardBackBoxAction() {
-		if(cardBackOptionsBox.getSelectedIndex() != 0) {selectedBack = (cardBackOptionsBox.getSelectedItem()+"").toLowerCase();
-		addText("You have decided to change the color of the card backs to "+selectedBack+".\nThis will be applied starting the next round.\n");}
-		try {backImage = ImageIO.read(getClass().getResource("/Pictures/"+selectedBack+"_back.png")).getScaledInstance(-2, 100, Image.SCALE_SMOOTH);
-		cardBackOptionsBox.setSelectedIndex(0);}
-		catch(IOException e) {UserInterface.displayException(e, 1);}
+		if (cardBackOptionsBox.getSelectedIndex() != 0) {
+			selectedBack = (cardBackOptionsBox.getSelectedItem() + "").toLowerCase();
+			addText("You have decided to change the color of the card backs to " + selectedBack
+					+ ".\nThis will be applied starting the next round.\n");
+		}
+		try {
+			backImage = ImageIO.read(getClass().getResource("/Pictures/" + selectedBack + "_back.png")).getScaledInstance(-2,
+					100, Image.SCALE_SMOOTH);
+			cardBackOptionsBox.setSelectedIndex(0);
+		} catch (IOException e) {
+			UserInterface.displayException(e, 1);
+		}
 	}
 	protected void pauseAction() {
 		return;
 		/*
-		try {
-			if(paused) {pauseButton.setText("Pause"); this.notify();}
-			else {pauseButton.setText("Resume"); this.wait();}
-		}
-		catch(InterruptedException e) {}
+		 * try { if(paused) {pauseButton.setText("Pause"); this.notify();} else {pauseButton.setText("Resume"); this.wait();}
+		 * } catch(InterruptedException e) {}
 		 */
 	}
 	protected void finishRound() {
-		if(!userInterface.playersAlive()) {
+		if (!userInterface.playersAlive()) {
 			finishRoundButton.setEnabled(false);
-			try {userInterface.endOfRound();}
-			catch(Exception x) {UserInterface.displayException(x, 1);}
+			try {
+				userInterface.endOfRound();
+			} catch (Exception x) {
+				UserInterface.displayException(x, 1);
+			}
 		}
 	}
-	protected void updatePlayerHand() {//the single player version
+	protected void updatePlayerHand() {// the single player version
 		addPlayers();
 		playerInfo.setText("Your cards:");
-		playerSum.setText("Sum: "+players.get(userInterface.getHumanPlayer()).sumOfHand());
-		updateCardLabels(2,-6);
+		playerSum.setText("Sum: " + players.get(userInterface.getHumanPlayer()).sumOfHand());
+		updateCardLabels(2, -6);
 	}
 	protected void updateSpecificPlayerHand() {
 		addPlayers();
-		if(!players.get(userInterface.getPlayerTurn()).getClass().getName().equals("AI31.Human")){return;}
-		playerInfo.setText(players.get(userInterface.getPlayerTurn()).getName()+"'s cards:");
-		playerSum.setText("Sum: "+players.get(userInterface.getPlayerTurn()).sumOfHand());
-		updateCardLabels(2,1);
+		if (!players.get(userInterface.getPlayerTurn()).getClass().getName().equals("AI31.Human")) { return; }
+		playerInfo.setText(players.get(userInterface.getPlayerTurn()).getName() + "'s cards:");
+		playerSum.setText("Sum: " + players.get(userInterface.getPlayerTurn()).sumOfHand());
+		updateCardLabels(2, 1);
 	}
 	protected void clearPlayerHand() {
 		playerInfo.setText("Player cards: ");
 		playerSum.setText("Player sum");
-		updateCardLabels(2,0);
+		updateCardLabels(2, 0);
 	}
 	protected void updateMiddleHand() {
 		addPlayers();
-		midSum.setText("Sum: "+players.get(players.size()-1).sumOfHand());
-		updateCardLabels(0,-8);
+		midSum.setText("Sum: " + players.get(players.size() - 1).sumOfHand());
+		updateCardLabels(0, -8);
 	}
-	protected void updateSpeed() {if(speed==0) {UserInterface.displayWarning(
-			"Be warned that the normal timer may not work. It still workes as\nintended otherwise. Let me know if the normal timer actualy does not work so I can fix it.",
-			"Things get crazy when a speed of 0 seconds is enabled!");}
-	speedLabel.setText("Current speed: "+(speed/1000.0)+" second(s)");}
-	protected void updateDisplaySetting() {otherDisplayLabel.setText("Display setting: \n"+DISPLAY_OPTIONS[showEliminations+2]+": "+(showEliminations));}
-	protected void updateTimerCounter(int counter) {timerCounter = counter;}
+	protected void updateSpeed() {
+		if (speed == 0) {
+			UserInterface.displayWarning(
+					"Be warned that the normal timer may not work. It still workes as\nintended otherwise. Let me know if the normal timer actualy does not work so I can fix it.",
+					"Things get crazy when a speed of 0 seconds is enabled!");
+		}
+		speedLabel.setText("Current speed: " + (speed / 1000.0) + " second(s)");
+	}
+	protected void updateDisplaySetting() {
+		otherDisplayLabel.setText("Display setting: \n" + DISPLAY_OPTIONS[showEliminations + 2] + ": " + (showEliminations));
+	}
+	protected void updateTimerCounter(int counter) { timerCounter = counter; }
 	protected void addText(String text) {
-		if(userInterface.getMode().equalsIgnoreCase("custom")) {if(firstCustomSelected || !userInterface.getCustomInfo().useTextArea) {return;}}
+		if (userInterface.getMode().equalsIgnoreCase("custom")) {
+			if (firstCustomSelected || !userInterface.getCustomInfo().useTextArea) { return; }
+		}
 		playArea.append(text);
 	}
-	protected void addCustomText(Object text) {playArea.append(text.toString());}
+	protected void addCustomText(Object text) { playArea.append(text.toString()); }
 	/**
-	 * <html>
-	 * Used to set the enabled/disabled settings of verying important components.
-	 * @param object - the number of the object you want to change enable/disable settings for
-	 * Object numbers: <br>
-	 * 0 for nextTurnButton, <br>
-	 * -1 for finishRoundButton, <br>
-	 * -2 for startRoundButton, <br>
-	 * -3 for speedBox, <br>
-	 * -4 for displayLivesLostBox, <br>
-	 * -5 for startGameButton, <br>
-	 * -6 for gameModeOptions, <br>
-	 * -7 for showPreviousButton, and <br>
-	 * -8 for playArea
-	 * @param status - whether you want the specified object enabled (true) or disabled (false)
-	 * </html>
+	 * <html> Used to set the enabled/disabled settings of varying important components.
+	 * 
+	 * @param object - the number of the object you want to change enable/disable settings for Object numbers: <br>
+	 *            0 for nextTurnButton, <br>
+	 *            -1 for finishRoundButton, <br>
+	 *            -2 for startRoundButton, <br>
+	 *            -3 for speedBox, <br>
+	 *            -4 for displayLivesLostBox, <br>
+	 *            -5 for startGameButton, <br>
+	 *            -6 for gameModeOptions, <br>
+	 *            -7 for showPreviousButton, and <br>
+	 *            -8 for playArea
+	 * @param status - whether you want the specified object enabled (true) or disabled (false) </html>
 	 */
 	protected void changeStatus(int object, boolean status) {
 		/*
-		 * Object numbers:
-		 * 0 for nextTurnButton
-		 * -1 for finishRoundButton
-		 * -2 for startRoundButton
-		 * -3 for speedBox
-		 * -4 for displayLivesLostBox
-		 * -5 for startGameButton
-		 * -6 for gameModeOptions
-		 * -7 for showPreviousButton
-		 * -8 for playArea
+		 * Object numbers: 0 for nextTurnButton -1 for finishRoundButton -2 for startRoundButton -3 for speedBox -4 for
+		 * displayLivesLostBox -5 for startGameButton -6 for gameModeOptions -7 for showPreviousButton -8 for playArea
 		 */
-		switch(object) {
-		case 0:
-			nextTurnButton.setEnabled(status);
-			break;
-		case -1:
-			finishRoundButton.setEnabled(status);
-			break;
-		case -2:
-			startRoundButton.setEnabled(status);
-			break;
-		case -3:
-			speedBox.setEnabled(status);
-			break;
-		case -4:
-			displayLivesLostBox.setEnabled(status);
-			break;
-		case -5:
-			startGameButton.setEnabled(status);
-			break;
-		case -6:
-			gameModeOptions.setEnabled(status);
-			break;
-		case -7:
-			showPreviousButton.setEnabled(status);
-			break;
-		case -8:
-			playArea.setEnabled(status);
-			break;
+		switch (object) {
+			case 0 :
+				nextTurnButton.setEnabled(status);
+				break;
+			case -1 :
+				finishRoundButton.setEnabled(status);
+				break;
+			case -2 :
+				startRoundButton.setEnabled(status);
+				break;
+			case -3 :
+				speedBox.setEnabled(status);
+				break;
+			case -4 :
+				displayLivesLostBox.setEnabled(status);
+				break;
+			case -5 :
+				startGameButton.setEnabled(status);
+				break;
+			case -6 :
+				gameModeOptions.setEnabled(status);
+				break;
+			case -7 :
+				showPreviousButton.setEnabled(status);
+				break;
+			case -8 :
+				playArea.setEnabled(status);
+				break;
 		}
 	}
-	protected void changeMidSum(int newSum) throws GameErrorException{if(newSum==-1) {midSum.setText("Mid sum");}else{addPlayers(); midSum.setText("Sum: "+players.get(players.size()-1).sumOfHand());}}
-	protected int getEliminationStatus() {return showEliminations;}
-	protected static int getSpeed() {return speed;}
-	protected void updateEliminationStatus(int status) {showEliminations = status;}
+	protected void changeMidSum(int newSum) throws GameException {
+		if (newSum == -1) {
+			midSum.setText("Mid sum");
+		} else {
+			addPlayers();
+			midSum.setText("Sum: " + players.get(players.size() - 1).sumOfHand());
+		}
+	}
+	protected int getEliminationStatus() { return showEliminations; }
+	protected static int getSpeed() { return speed; }
+	protected void updateEliminationStatus(int status) { showEliminations = status; }
 	protected void updateGameMode() {
 		int ind = 0;
-		if(gameModeOptions.getSelectedItem().equals(MODE_OPTIONS[1])) {userInterface.setMode("Competition"); updateMultiButtons(false); ind = 1;}
-		else if(gameModeOptions.getSelectedItem().equals(MODE_OPTIONS[2])) {userInterface.setMode("Friendly"); updateMultiButtons(true); ind = 2;}
-		else if(gameModeOptions.getSelectedItem().equals(MODE_OPTIONS[3])) {userInterface.setMode("Combination"); updateMultiButtons(true); ind = 3;}
-		else if(gameModeOptions.getSelectedItem().equals(MODE_OPTIONS[4])) {userInterface.setMode("Custom"); ind = 4;}
-		else {return;}
-		if(ind!=0 && ind!=4) {addText("You have chosen the game mode "+MODE_OPTIONS[ind]+"\n");}
-		else if(ind==4) {addCustomText("You have chosen the game mode "+MODE_OPTIONS[4]+"\n"
-				+"Note that none of the above settings, except for the game mode, will save.\n");}
-		if(priorIndex == 0) {priorIndex = 1;}
-		else {priorIndex = gameModeOptions.getSelectedIndex();}
+		if (gameModeOptions.getSelectedItem().equals(MODE_OPTIONS[1])) {
+			userInterface.setMode("Competition");
+			updateMultiButtons(false);
+			ind = 1;
+		} else if (gameModeOptions.getSelectedItem().equals(MODE_OPTIONS[2])) {
+			userInterface.setMode("Friendly");
+			updateMultiButtons(true);
+			ind = 2;
+		} else if (gameModeOptions.getSelectedItem().equals(MODE_OPTIONS[3])) {
+			userInterface.setMode("Combination");
+			updateMultiButtons(true);
+			ind = 3;
+		} else if (gameModeOptions.getSelectedItem().equals(MODE_OPTIONS[4])) {
+			userInterface.setMode("Custom");
+			ind = 4;
+		} else {
+			return;
+		}
+		if (ind != 0 && ind != 4) {
+			addText("You have chosen the game mode " + MODE_OPTIONS[ind] + "\n");
+		} else if (ind == 4) {
+			addCustomText("You have chosen the game mode " + MODE_OPTIONS[4] + "\n"
+					+ "Note that none of the above settings, except for the game mode, will save.\n");
+		}
+		if (priorIndex == 0) {
+			priorIndex = 1;
+		} else {
+			priorIndex = gameModeOptions.getSelectedIndex();
+		}
 		gameModeOptions.setSelectedIndex(0);
 	}
 	protected void updateMultiButtons(boolean status) {
-		if(status) {multiPlayerOn.setSelected(true); multiPlayerOff.setSelected(false);}
-		else {multiPlayerOn.setSelected(false); multiPlayerOff.setSelected(true);}
+		if (status) {
+			multiPlayerOn.setSelected(true);
+			multiPlayerOff.setSelected(false);
+		} else {
+			multiPlayerOn.setSelected(false);
+			multiPlayerOff.setSelected(true);
+		}
 	}
 	protected void updateCardLabels(int type, int subType) {
 		addPlayers();
@@ -1078,35 +1282,76 @@ public class UserPanel extends JPanel implements ActionListener, AI31Constants{
 		list.add(playerImage1);
 		list.add(playerImage2);
 		list.add(playerImage3);
-		switch(type) {
-		case 0://mid
-			if(userInterface.getTurnStatus() != 1) {for(int i=0; i<3; i++) {list.get(i).setIcon(
-					new ImageIcon(players.get(players.size()-1).getCard(i).getImage()));}break;}
-			else {for(int i=0; i<3; i++) {list.get(i).setIcon(new ImageIcon(backImage));}break;}
-		case 1://cpu
-			if(!players.get(userInterface.getPlayerTurn()).getClass().getName().equals("AI31.Machine")) {return;}
-			if(userInterface.getTurnStatus() == -1 && !userInterface.playersAlive()) {
-				for(int i=3; i<6; i++) {if(players.get(subType)!=null) {
-					list.get(i).setIcon(new ImageIcon(players.get(subType).getCard(i-3).getImage()));}}  
-				if(players.get(subType) != null) {sumOfCPU.setText("Sum: "+players.get(subType).sumOfHand());} 
-				break;
-			}
-			else {for(int i=3; i<6; i++) {list.get(i).setIcon(new ImageIcon(backImage));}break;}
-		case 2://player
-			if(!userInterface.isMultiPlayer()) {for(int i=6; i<9; i++) {list.get(i).setIcon(
-					new ImageIcon(players.get(userInterface.getHumanPlayer()).getCard(i-6).getImage()));}break;}
-			else {
-				if(subType==0) {for(int i=6; i<9; i++) {list.get(i).setIcon(new ImageIcon(backImage));}break;}//cards disabled/hidden
-				else if(subType==1){
-					if(players.get(userInterface.getPlayerTurn()) != null) {
-						for(int i=6; i<9; i++) {list.get(i).setIcon(new ImageIcon(players.get(
-								userInterface.getPlayerTurn()).getCard(i-6).getImage()));}
-						break;
+		switch (type) {
+			case 0 :// mid
+				if (userInterface.getTurnStatus() != 1) {
+					for (int i = 0; i < 3; i++) {
+						list.get(i).setIcon(new ImageIcon(players.get(players.size() - 1).getCard(i).getImage()));
 					}
-				}//cards enabled/visible
-				playerSum.setText("Sum: "+players.get(userInterface.getPlayerTurn()).sumOfHand());
-			}
-			break;
+					break;
+				} else {
+					for (int i = 0; i < 3; i++) { list.get(i).setIcon(new ImageIcon(backImage)); }
+					break;
+				}
+			case 1 :// cpu
+				if (!players.get(userInterface.getPlayerTurn()).getClass().getName().equals("AI31.Machine")) { return; }
+				if (userInterface.getTurnStatus() == -1 && !userInterface.playersAlive()) {
+					for (int i = 3; i < 6; i++) {
+						if (players.get(subType) != null) {
+							list.get(i).setIcon(new ImageIcon(players.get(subType).getCard(i - 3).getImage()));
+						}
+					}
+					if (players.get(subType) != null) { sumOfCPU.setText("Sum: " + players.get(subType).sumOfHand()); }
+					break;
+				} else {
+					for (int i = 3; i < 6; i++) { list.get(i).setIcon(new ImageIcon(backImage)); }
+					break;
+				}
+			case 2 :// player
+				if (!userInterface.isMultiPlayer()) {
+					for (int i = 6; i < 9; i++) {
+						list.get(i).setIcon(
+								new ImageIcon(players.get(userInterface.getHumanPlayer()).getCard(i - 6).getImage()));
+					}
+					break;
+				} else {
+					if (subType == 0) {
+						for (int i = 6; i < 9; i++) { list.get(i).setIcon(new ImageIcon(backImage)); }
+						break;
+					} // cards disabled/hidden
+					else if (subType == 1) {
+						if (players.get(userInterface.getPlayerTurn()) != null) {
+							for (int i = 6; i < 9; i++) {
+								list.get(i).setIcon(
+										new ImageIcon(players.get(userInterface.getPlayerTurn()).getCard(i - 6).getImage()));
+							}
+							break;
+						}
+					} // cards enabled/visible
+					playerSum.setText("Sum: " + players.get(userInterface.getPlayerTurn()).sumOfHand());
+				}
+				break;
 		}
+	}
+	@Override
+	public void mouseDragged(MouseEvent e) {
+	}
+	@Override
+	public void mouseMoved(MouseEvent e) {
+	}
+	@Override
+	public void mouseClicked(MouseEvent e) {
+	}
+	@Override
+	public void mousePressed(MouseEvent e) {
+	}
+	@Override
+	public void mouseReleased(MouseEvent e) {
+	}
+	@Override
+	public void mouseEntered(MouseEvent e) {
+	}
+	@Override
+	public void mouseExited(MouseEvent e) {
 	}
 }

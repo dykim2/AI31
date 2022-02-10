@@ -1,5 +1,6 @@
 package AI31;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public abstract class AI31Functions implements AI31Constants{
 	public static int[] convertInts(List<Integer> list) {
@@ -8,11 +9,12 @@ public abstract class AI31Functions implements AI31Constants{
 		return vals;
 	}
 	/**
-	 * Finds whether the object T is contained in the given ArrayList<T>. Uses .equals() for comparision.
-	 * @param list - the list you want to search
-	 * @param param - the object you want to find in the list
-	 * @return true if the object is in the list, false otherwise
-	 */
+     * Finds whether the object of instance T is contained in the given ArrayList<T>. Uses .equals() for comparison.
+     * @param <T> the object type 
+     * @param list - the list you want to search
+     * @param param - the object you want to find in the list
+     * @return true if the object is in the list, false otherwise
+     */
 	public static <T> boolean contains(ArrayList<T> list, T param) {
 		for(int i=0; i<list.size(); i++) {
 			if(list.get(i).equals(param)) {
@@ -21,6 +23,13 @@ public abstract class AI31Functions implements AI31Constants{
 		}
 		return false;
 	}
+	/**
+     * Finds whether the object T is contained in the given T[]. Uses .equals() for comparison.
+     * 
+     * @param list - the list you want to search
+     * @param param - the object you want to find in the list
+     * @return true if the object is in the list, false otherwise
+     */
 	public static <T> boolean contains(T[] list, T param) {
 		for(int i=0; i<list.length; i++) {
 			if(list[i].equals(param)) {

@@ -1,5 +1,10 @@
 package baselineCustomClasses;
-
+/**
+ * The exception for whenever an operation directly involving a PlayingCard object or method does not work properly.
+ * @author Dong-Yon Kim
+ *
+ */
+@SuppressWarnings("serial")
 public class PlayingCardException extends Exception {
 	private String problem;
 	private String errorCode;
